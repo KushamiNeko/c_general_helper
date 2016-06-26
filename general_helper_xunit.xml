@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?><testsuite name="general_helper" time="0.041" tests="4" failures="0" errors="0" ><testcase name="pathJoinTest" time="0.016" ><system-out><![CDATA[[       OK ] pathJoinTest
+]]></system-out></testcase><testcase name="pathGetBaseTest" time="0.001" ><system-out><![CDATA[[       OK ] pathGetBaseTest
+]]></system-out></testcase><testcase name="pathRemoveExtTest" time="0.001" ><system-out><![CDATA[[       OK ] pathRemoveExtTest
+]]></system-out></testcase><testcase name="checkFileExistTest" time="0.002" ><system-out><![CDATA[[       OK ] checkFileExistTest
+]]></system-out></testcase></testsuite>
