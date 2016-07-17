@@ -1,4 +1,7 @@
-#include "../header/gl_helper.h"
+#include "gl_helper.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "../../third_party/stb/stb_image.h"
 
 GLuint generateVBO(const GLuint *vao, const int pointCounts,
                    const int vectorSize, const GLfloat *dataArray,
@@ -147,76 +150,6 @@ static int getTextureSlotInt(const GLenum textureSlot) {
   }
 }
 
-// static void bindGLTexture(unsigned char *imageData, int width, int height,
-//                           GLenum textureSlot, GLuint *tex, GLint *texLoc) {
-//   // active the first OpenGL texture slot
-//   glActiveTexture(textureSlot);
-//
-//   // printf("texture: %s, slot index: %d\n", textureName, slotIndex);
-//   glBindTexture(GL_TEXTURE_2D, *tex);
-//
-//   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-//                GL_UNSIGNED_BYTE, imageData);
-//
-//   // set the last argument to GL_REPEAT to enable uv wraping effects
-//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//
-//   glActiveTexture(textureSlot);
-//   int slotIndex = getTextureSlotInt(textureSlot);
-//
-//   // int texLoc = glGetUniformLocation(*shaderProgram, textureName);
-//   glUseProgram(*shaderProgram);
-//   glUniform1i(*texLoc, slotIndex);
-// }
-//
-// int loadTexture(const char *textureFile, GLenum textureSlot, GLuint *tex) {
-//   int x, y, n;
-//   int forceChannels = 4;
-//   unsigned char *imageData = stbi_load(textureFile, &x, &y, &n,
-//   forceChannels);
-//
-//   if (!imageData) {
-//     printf("ERROR: counld not load %s\n", textureFile);
-//     return 0;
-//   }
-//
-//   // check if the texture dimension is a power of 2
-//   // if ((x & (x - 1)) != 0 || (y & (y - 1)) != 0) {
-//   //  printf("WARNING: the dimensions of the texture %s is not power of 2\n",
-//   //         textureFile);
-//   //}
-//
-//   // flip the image data upside down because OpenGL expects that the 0 on the
-//   y
-//   // axis to be at the bottom of the texture, but the image usually have y
-//   axis
-//   // 0 at the top
-//
-//   int bytesWidth = x * 4;
-//   unsigned char *top = NULL;
-//   unsigned char *bottom = NULL;
-//   unsigned char temp = 0;
-//   int halfHeight = y / 2;
-//
-//   for (int row = 0; row < halfHeight; row++) {
-//     top = imageData + row * bytesWidth;
-//     bottom = imageData + ((y - row - 1) * bytesWidth);
-//     for (int col = 0; col < bytesWidth; col++) {
-//       temp = *top;
-//       *top = *bottom;
-//       *bottom = temp;
-//       top++;
-//       bottom++;
-//     }
-//   }
-//
-//   bindGLTexture(imageData, x, y, textureSlot, tex);
-//   return 1;
-// }
-
 int loadTexture(const char *textureFile, GLuint *shaderProgram,
                 GLenum textureSlot, GLuint *tex, GLint *texLoc) {
   int x, y, n;
@@ -227,12 +160,6 @@ int loadTexture(const char *textureFile, GLuint *shaderProgram,
     printf("ERROR: counld not load %s\n", textureFile);
     return 0;
   }
-
-  // check if the texture dimension is a power of 2
-  // if ((x & (x - 1)) != 0 || (y & (y - 1)) != 0) {
-  //  printf("WARNING: the dimensions of the texture %s is not power of 2\n",
-  //         textureFile);
-  //}
 
   // flip the image data upside down because OpenGL expects that the 0 on the
   // y
@@ -258,9 +185,6 @@ int loadTexture(const char *textureFile, GLuint *shaderProgram,
     }
   }
 
-  // GLuint tex = 0;
-  // glGenTextures(1, &tex);
-
   // active the first OpenGL texture slot
   glActiveTexture(textureSlot);
   int slotIndex = getTextureSlotInt(textureSlot);
@@ -277,7 +201,6 @@ int loadTexture(const char *textureFile, GLuint *shaderProgram,
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   glActiveTexture(textureSlot);
-  //  // int texLoc = glGetUniformLocation(*shaderProgram, textureName);
   glUseProgram(*shaderProgram);
   glUniform1i(*texLoc, slotIndex);
   return 1;
@@ -291,21 +214,9 @@ GLuint generateGLTexture() {
 }
 
 GLint generateTexLoc(GLuint *shaderProgram, const char *textureName) {
-  // glActiveTexture(textureSlot);
-  // int slotIndex = getTextureSlotInt(textureSlot);
-
   int texLoc = glGetUniformLocation(*shaderProgram, textureName);
-  // glUseProgram(*shaderProgram);
-  // glUniform1i(texLoc, slotIndex);
   return texLoc;
 }
-
-// void bindToTexLoc(GLuint texLoc, GLenum textureSlot, GLuint *shaderProgram) {
-//   glActiveTexture(textureSlot);
-//   int slotIndex = getTextureSlotInt(textureSlot);
-//   glUseProgram(*shaderProgram);
-//   glUniform1i(texLoc, slotIndex);
-// }
 
 GLuint genBakingBuffer(const unsigned int renderSize) {
   GLuint fb;

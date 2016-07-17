@@ -1,4 +1,4 @@
-#include "../header/general_helper.h"
+#include "general_helper.h"
 
 #ifdef UNIT_TESTING
 #include <cmockery/cmockery_override.h>

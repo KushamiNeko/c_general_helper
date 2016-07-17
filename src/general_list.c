@@ -1,4 +1,4 @@
-#include "../header/general_list.h"
+#include "general_list.h"
 
 #ifdef UNIT_TESTING
 #define __malloc malloc

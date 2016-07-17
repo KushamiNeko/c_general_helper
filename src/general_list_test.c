@@ -1,4 +1,4 @@
-#include "../source/general_list.c"
+#include "general_list.c"
 #include <assert.h>
 
 #include <stdarg.h>

@@ -1,4 +1,4 @@
-#include "../source/general_helper.c"
+#include "general_helper.c"
 #include <assert.h>
 
 #include <stdarg.h>

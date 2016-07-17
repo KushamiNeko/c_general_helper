@@ -6,12 +6,8 @@
 
 #include <GL/glew.h>
 
-//#include <GLFW/glfw3.h>
-
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <stb_image.h>
 
 extern GLuint generateVBO(const GLuint *vao, const int point_count,
                           const int vector_size, const GLfloat *data_array,

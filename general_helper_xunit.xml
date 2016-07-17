@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" ?><testsuite name="general_helper" time="0.086" tests="6" failures="0" errors="0" ><testcase name="pathJoinTest" time="0.016" ><system-out><![CDATA[[       OK ] pathJoinTest
+<?xml version="1.0" encoding="UTF-8" ?><testsuite name="general_helper" time="0.049" tests="6" failures="0" errors="0" ><testcase name="pathJoinTest" time="0.003" ><system-out><![CDATA[[       OK ] pathJoinTest
 ]]></system-out></testcase><testcase name="pathGetBaseTest" time="0.001" ><system-out><![CDATA[[       OK ] pathGetBaseTest
-]]></system-out></testcase><testcase name="pathRemoveExtTest" time="0.005" ><system-out><![CDATA[[       OK ] pathRemoveExtTest
-]]></system-out></testcase><testcase name="checkFileExistTest" time="0.008" ><system-out><![CDATA[[       OK ] checkFileExistTest
-]]></system-out></testcase><testcase name="memoryLeakTest" time="0.001" ><system-out><![CDATA[[       OK ] memoryLeakTest
-]]></system-out></testcase><testcase name="charJoinTest" time="0.002" ><system-out><![CDATA[[       OK ] charJoinTest
+]]></system-out></testcase><testcase name="pathRemoveExtTest" time="0.004" ><system-out><![CDATA[[       OK ] pathRemoveExtTest
+]]></system-out></testcase><testcase name="checkFileExistTest" time="0.006" ><system-out><![CDATA[[       OK ] checkFileExistTest
+]]></system-out></testcase><testcase name="memoryLeakTest" time="0.000" ><system-out><![CDATA[[       OK ] memoryLeakTest
+]]></system-out></testcase><testcase name="charJoinTest" time="0.001" ><system-out><![CDATA[[       OK ] charJoinTest
 ]]></system-out></testcase></testsuite>

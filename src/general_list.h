@@ -1,7 +1,7 @@
 #ifndef GENERAL_LIST_H
 #define GENERAL_LIST_H
 
-#include "../header/general_helper.h"
+#include "general_helper.h"
 #include <stdlib.h>
 
 struct GeneralList {
@@ -18,7 +18,7 @@ extern struct GeneralList *generalListNew(void *data);
 extern void generalListAddItemStack(struct GeneralList **main,
                                     struct GeneralList *item);
 
- extern void generalListAddItemQueue(struct GeneralList **main,
+extern void generalListAddItemQueue(struct GeneralList **main,
                                     struct GeneralList *item);
 
 extern struct GeneralList *generalListPopItem(struct GeneralList **main);
