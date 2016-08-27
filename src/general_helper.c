@@ -4,26 +4,10 @@
 #include <cmockery/cmockery_override.h>
 #endif
 
-inline void *defenseCalloc(size_t numElements, size_t sizeOfObject) {
-  void *re = calloc(numElements, sizeOfObject);
-  if (re == NULL) {
-    printf("The system is running out of memory!\n");
-    printf("Abort software operation\n");
-    exit(EXIT_FAILURE);
-  }
-
-  return re;
-}
-
-inline void *defenseMalloc(size_t memorySize) {
-  void *re = malloc(memorySize);
-  if (re == NULL) {
-    printf("The system is running out of memory!\n");
-    printf("Abort software operation\n");
-    exit(EXIT_FAILURE);
-  }
-
-  return re;
+void mallocFailAbort(void *data) {
+  printf("memory allocation failed!\n");
+  printf("abort oeration!\n");
+  exit(EXIT_FAILURE);
 }
 
 unsigned int euclidGCD(const unsigned int x, const unsigned int y) {
@@ -67,7 +51,7 @@ char *charJoin(const char *a, const char *b, const char *s) {
     return NULL;
   }
 
-  char *r = (char *)defenseCalloc(1, sizeR * sizeof(char));
+  char *r = defenseCalloc(1, sizeR * sizeof(char), mallocFailAbort, NULL);
   strcat(r, a);
 
   if (sizeS != 0) {
@@ -86,7 +70,8 @@ char *pathJoin(const char *a, const char *b) {
 
   size_t sizeR = sizeA + sizeB + 2;
 
-  char *r = (char *)defenseCalloc(1, sizeR * sizeof(char));
+  char *r = defenseCalloc(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+
   strcat(r, a);
   strcat(r, SYSTEM_PATH_SEPARATOR);
   strcat(r, b);
@@ -96,19 +81,26 @@ char *pathJoin(const char *a, const char *b) {
 }
 
 char *pathGetBase(const char *path) {
-  char *a = (char *)path;
+  size_t textLen = strlen(path);
+  char *p = (char *)&(path[textLen - 1]);
+
   char *base = (char *)path;
   char *sys = SYSTEM_PATH_SEPARATOR;
 
-  while (strcmp(a, "\0") != 0) {
-    if (*a == *sys) {
-      base = a;
+  while (1) {
+    if (*p == *sys) {
+      base = p;
+      break;
     }
-    a++;
+    p--;
+
+    if (strcmp(p, path) == 0) {
+      return NULL;
+    }
   }
 
   size_t sizeR = strlen(base);
-  char *r = (char *)defenseCalloc(1, sizeR * sizeof(char));
+  char *r = defenseCalloc(1, sizeR * sizeof(char), mallocFailAbort, NULL);
   strcat(r, ++base);
   r[sizeR - 1] = '\0';
 
@@ -130,7 +122,7 @@ char *pathRemoveExt(const char *path) {
   }
 
   size_t reLen = textLen - newLen;
-  char *r = (char *)defenseCalloc(1, reLen * sizeof(char));
+  char *r = defenseCalloc(1, reLen * sizeof(char), mallocFailAbort, NULL);
   memcpy(r, path, reLen - 1);
 
   r[reLen - 1] = '\0';
@@ -152,7 +144,8 @@ char *readFile(const char *file) {
     fseek(f, 0, SEEK_END);
     length = ftell(f);
     rewind(f);
-    content = (char *)defenseCalloc(1, (length * sizeof(char)) + 1);
+    content =
+        defenseCalloc(1, (length * sizeof(char)) + 1, mallocFailAbort, NULL);
     if (content) {
       fread(content, sizeof(char), length, f);
     }

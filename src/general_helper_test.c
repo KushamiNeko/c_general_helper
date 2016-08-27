@@ -1,9 +1,9 @@
 #include "general_helper.c"
 #include <assert.h>
 
+#include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include <setjmp.h>
 #include <stdint.h>
 
 #include <cmockery/cmockery.h>
@@ -29,6 +29,9 @@ static void pathGetBaseTest(void **state) {
   assert(strlen(path) == 2);
 
   free(path);
+
+  path = pathGetBase("abcd");
+  assert(path == NULL);
 }
 
 static void pathRemoveExtTest(void **state) {
@@ -63,7 +66,7 @@ static void checkFileExistTest(void **state) {
 }
 
 static void memoryLeakTest(void **state) {
-  int *p = (int *)defenseCalloc(10, sizeof(int));
+  int *p = defenseCalloc(10, sizeof(int), mallocFailAbort, NULL);
   *p = 0;
   free(p);
 }

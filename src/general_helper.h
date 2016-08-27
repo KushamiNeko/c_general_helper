@@ -1,27 +1,50 @@
 #ifndef GENERAL_HELPER_H
 #define GENERAL_HELPER_H
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #define SYSTEM_PATH_SEPARATOR "/"
 
-extern void *defenseCalloc(size_t numElements, size_t sizeOfObject);
-extern void *defenseMalloc(size_t memorySize);
+#define defenseCalloc(num, size, cbFail, cbData) \
+  ({                                             \
+    void *ptr;                                   \
+    ptr = calloc(num, size);                     \
+    if (ptr == NULL) {                           \
+      cbFail(cbData);                            \
+    }                                            \
+    ptr;                                         \
+  })
 
-extern unsigned int euclidGCD(const unsigned int x, const unsigned int y);
-extern double fit01(double src, double newMin, double newMax);
+#define defenseMalloc(size, cbFail, cbData) \
+  ({                                        \
+    void *ptr;                              \
+    ptr = malloc(size);                     \
+    if (ptr == NULL) {                      \
+      cbFail(cbData);                       \
+    }                                       \
+    ptr;                                    \
+  })
 
-extern char *charJoin(const char *a, const char *b, const char *s);
+void mallocFailAbort(void *data);
 
-extern char *pathJoin(const char *a, const char *b);
-extern char *pathGetBase(const char *path);
-extern char *pathRemoveExt(const char *path);
+unsigned int euclidGCD(const unsigned int x, const unsigned int y);
 
-extern int fileExist(const char *fileName);
-extern char *readFile(const char *file);
+double fit01(double src, double newMin, double newMax);
+
+char *charJoin(const char *a, const char *b, const char *s);
+
+char *pathJoin(const char *a, const char *b);
+
+char *pathGetBase(const char *path);
+
+char *pathRemoveExt(const char *path);
+
+int fileExist(const char *fileName);
+
+char *readFile(const char *file);
 
 #endif

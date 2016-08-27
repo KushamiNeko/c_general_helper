@@ -1,8 +1,8 @@
 #include "linear_math.h"
 
 #define TAU 2.0 * M_PI
-#define ONE_DEG_IN_RAD (2.0 * M_PI) / 360.0 // 0.017444444
-#define ONE_RAD_IN_DEG 360.0 / (2.0 * M_PI) // 57.2957795
+#define ONE_DEG_IN_RAD (2.0 * M_PI) / 360.0  // 0.017444444
+#define ONE_RAD_IN_DEG 360.0 / (2.0 * M_PI)  // 57.2957795
 
 #define VEC2_SIZE 2
 #define VEC3_SIZE 3
@@ -22,58 +22,41 @@ struct Representation {
 
 static struct Representation *representationNew(size_t dataSize) {
   struct Representation *re =
-      (struct Representation *)defenseMalloc(sizeof(struct Representation));
+      defenseMalloc(sizeof(struct Representation), mallocFailAbort, NULL);
   re->size = dataSize;
-  re->data = (double *)defenseMalloc(dataSize * sizeof(double));
+
+  re->data = defenseMalloc(dataSize * sizeof(double), mallocFailAbort, NULL);
 
   return re;
 }
 
 #if __LINEAR_MATH_DEBUG
 inline static void vec2SizeCheck(vec2 v) {
-  // printf("MACRO: vec2_size_check\n");
-  /* assert(sizeof(_FLOAT) * VEC2_SIZE == sizeof(*v) * VEC2_SIZE); */
-
   struct Representation *vr = (struct Representation *)v;
   assert(vr->size == VEC2_SIZE);
 }
 
 inline static void vec3SizeCheck(vec3 v) {
-  // printf("MACRO: vec3_size_check\n");
-  // assert(sizeof(_FLOAT) * VEC3_SIZE == sizeof(*v) * VEC3_SIZE);
-
   struct Representation *vr = (struct Representation *)v;
   assert(vr->size == VEC3_SIZE);
 }
 
 inline static void vec4SizeCheck(vec4 v) {
-  // printf("MACRO: vec4_size_check\n");
-  // assert(sizeof(_FLOAT) * VEC4_SIZE == sizeof(*v) * VEC4_SIZE);
-
   struct Representation *vr = (struct Representation *)v;
   assert(vr->size == VEC4_SIZE);
 }
 
 inline static void mat3SizeCheck(mat3 m) {
-  // printf("MACRO: mat3_size_check\n");
-  // assert(sizeof(_FLOAT) * MAT3_SIZE == sizeof(*m) * MAT3_SIZE);
-
   struct Representation *mr = (struct Representation *)m;
   assert(mr->size == MAT3_SIZE);
 }
 
 inline static void mat4SizeCheck(mat4 m) {
-  // printf("MACRO: mat4_size_check\n");
-  //   assert(sizeof(_FLOAT) * MAT4_SIZE == sizeof(*m) * MAT4_SIZE);
-
   struct Representation *mr = (struct Representation *)m;
   assert(mr->size == MAT4_SIZE);
 }
 
 inline static void versorSizeCheck(versor ve) {
-  // printf("MACRO: versor_size_check\n");
-  //   assert(sizeof(_FLOAT) * VERSOR_SIZE != sizeof(ve));
-
   struct Representation *ver = (struct Representation *)ve;
   assert(ver->size == VERSOR_SIZE);
 }
@@ -154,11 +137,6 @@ void printVersor(versor q) {
 /*------------------------------VECTOR FUNCTIONS------------------------------*/
 
 vec3 zeroVec3() {
-  /* struct Representation *vc = (struct Representation
-   * *)defenseMalloc(sizeof(struct Representation)); */
-  /* vc->size = VEC3_SIZE; */
-  /* vc->data = (double *)defenseMalloc(VEC3_SIZE * sizeof(double)); */
-
   struct Representation *vc = representationNew(VEC3_SIZE);
 
   vc->data[0] = 0.0f;
@@ -169,11 +147,6 @@ vec3 zeroVec3() {
 }
 
 vec4 zeroVec4() {
-  /* struct Representation *vc = (struct Representation
-   * *)defenseMalloc(sizeof(struct Representation)); */
-  /* vc->size = VEC4_SIZE; */
-  /* vc->data = (double *)defenseMalloc(VEC4_SIZE * sizeof(double)); */
-
   struct Representation *vc = representationNew(VEC4_SIZE);
 
   vc->data[0] = 0.0f;

@@ -1,8 +1,4 @@
-bin/general_list_test: bin/general_list bin/general_helper bin/gl_helper bin/linear_math bin/general_helper_test
-	gcc `pkg-config --cflags cmockery2` src/general_list_test.c \
-	 	-o bin/general_list_test bin/general_helper `pkg-config --libs cmockery2`
-
-bin/general_helper_test: bin/general_helper
+bin/general_helper_test: bin/general_helper bin/gl_helper bin/linear_math
 	gcc `pkg-config --cflags cmockery2` src/general_helper_test.c \
 	 	-o bin/general_helper_test `pkg-config --libs cmockery2`
 
