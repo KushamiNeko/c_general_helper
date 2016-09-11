@@ -157,3 +157,32 @@ char *readFile(const char *file) {
 
   return content;
 }
+
+void copy_file(const char *src, const char *tar) {
+  FILE *source, *target;
+  source = fopen(src, "rb");
+  if (source == NULL) {
+    printf("copy source failed\n");
+    exit(1);
+  }
+
+  fseek(source, 0, SEEK_END);
+  long int sizeSrc = ftell(source);
+  fseek(source, 0, SEEK_SET);
+
+  target = fopen(tar, "wb");
+  if (target == NULL) {
+    printf("copy target failed\n");
+    fclose(source);
+    exit(1);
+  }
+
+  char ch;
+  for (int i = 0; i < sizeSrc; i++) {
+    ch = fgetc(source);
+    fputc(ch, target);
+  }
+
+  fclose(source);
+  fclose(target);
+}

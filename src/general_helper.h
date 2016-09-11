@@ -9,24 +9,24 @@
 
 #define SYSTEM_PATH_SEPARATOR "/"
 
-#define defenseCalloc(num, size, cbFail, cbData) \
-  ({                                             \
-    void *ptr;                                   \
-    ptr = calloc(num, size);                     \
-    if (ptr == NULL) {                           \
-      cbFail(cbData);                            \
-    }                                            \
-    ptr;                                         \
+#define defenseCalloc(num, size, cbFail, cbData)                               \
+  ({                                                                           \
+    void *ptr;                                                                 \
+    ptr = calloc(num, size);                                                   \
+    if (ptr == NULL) {                                                         \
+      cbFail(cbData);                                                          \
+    }                                                                          \
+    ptr;                                                                       \
   })
 
-#define defenseMalloc(size, cbFail, cbData) \
-  ({                                        \
-    void *ptr;                              \
-    ptr = malloc(size);                     \
-    if (ptr == NULL) {                      \
-      cbFail(cbData);                       \
-    }                                       \
-    ptr;                                    \
+#define defenseMalloc(size, cbFail, cbData)                                    \
+  ({                                                                           \
+    void *ptr;                                                                 \
+    ptr = malloc(size);                                                        \
+    if (ptr == NULL) {                                                         \
+      cbFail(cbData);                                                          \
+    }                                                                          \
+    ptr;                                                                       \
   })
 
 void mallocFailAbort(void *data);
@@ -46,5 +46,7 @@ char *pathRemoveExt(const char *path);
 int fileExist(const char *fileName);
 
 char *readFile(const char *file);
+
+void copy_file(const char *src, const char *tar);
 
 #endif
