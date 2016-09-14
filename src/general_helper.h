@@ -7,26 +7,35 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef _WIN32
+#define SYSTEM_PATH_SEPARATOR "\\"
+#else
 #define SYSTEM_PATH_SEPARATOR "/"
 
-#define defenseCalloc(num, size, cbFail, cbData)                               \
-  ({                                                                           \
-    void *ptr;                                                                 \
-    ptr = calloc(num, size);                                                   \
-    if (ptr == NULL) {                                                         \
-      cbFail(cbData);                                                          \
-    }                                                                          \
-    ptr;                                                                       \
+#define DEFENSE_CALLOC(num, size, cbFail, cbData) \
+  ({                                              \
+    void* ptr;                                    \
+    ptr = calloc(num, size);                      \
+    if (ptr == NULL) {                            \
+      cbFail(cbData);                             \
+    }                                             \
+    ptr;                                          \
   })
 
-#define defenseMalloc(size, cbFail, cbData)                                    \
-  ({                                                                           \
-    void *ptr;                                                                 \
-    ptr = malloc(size);                                                        \
-    if (ptr == NULL) {                                                         \
-      cbFail(cbData);                                                          \
-    }                                                                          \
-    ptr;                                                                       \
+#define DEFENSE_MALLOC(size, cbFail, cbData) \
+  ({                                         \
+    void* ptr;                               \
+    ptr = malloc(size);                      \
+    if (ptr == NULL) {                       \
+      cbFail(cbData);                        \
+    }                                        \
+    ptr;                                     \
+  })
+
+#define DEFENSE_FREE(ptr) \
+  ({                      \
+    free(ptr);            \
+    ptr = NULL;           \
   })
 
 void mallocFailAbort(void *data);
@@ -47,6 +56,6 @@ int fileExist(const char *fileName);
 
 char *readFile(const char *file);
 
-void copy_file(const char *src, const char *tar);
+int copy_file(const char *src, const char *tar);
 
 #endif

@@ -1,12 +1,14 @@
 #include "general_helper.h"
 
+#include <cmockery/pbc.h>
+
 #ifdef UNIT_TESTING
 #include <cmockery/cmockery_override.h>
 #endif
 
 void mallocFailAbort(void *data) {
-  printf("memory allocation failed!\n");
-  printf("abort oeration!\n");
+  printf("HEAP MEMORY ALLOCATION FAILED!\n");
+  printf("ABORT OPERATION!\n");
   exit(EXIT_FAILURE);
 }
 
@@ -42,16 +44,29 @@ double fit01(double src, double newMin, double newMax) {
 }
 
 char *charJoin(const char *a, const char *b, const char *s) {
+  REQUIRE(a != NULL);
+  REQUIRE(b != NULL);
+  REQUIRE(c != NULL);
+
   size_t sizeA = strlen(a);
   size_t sizeB = strlen(b);
   size_t sizeS = strlen(s);
+
+  REQUIRE(sizeA != 0);
+  REQUIRE(sizeB != 0);
+  REQUIRE(sizeC != 0);
 
   size_t sizeR = sizeA + sizeB + sizeS + 1;
   if (sizeR == 1) {
     return NULL;
   }
 
-  char *r = defenseCalloc(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  ENSURE(sizeR != 0);
+
+  char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+
+  ENSURE(r != NULL);
+
   strcat(r, a);
 
   if (sizeS != 0) {
@@ -61,28 +76,47 @@ char *charJoin(const char *a, const char *b, const char *s) {
   strcat(r, b);
   strcat(r, "\0");
 
+  ENSURE(r[sizeR] == "\0");
+
   return r;
 }
 
 char *pathJoin(const char *a, const char *b) {
+  REQUIRE(a != NULL);
+  REQUIRE(b != NULL);
+
   size_t sizeA = strlen(a);
   size_t sizeB = strlen(b);
 
+  REQUIRE(sizeA != 0);
+  REQUIRE(sizeB != 0);
+
   size_t sizeR = sizeA + sizeB + 2;
 
-  char *r = defenseCalloc(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  ENSURE(sizeR != 0);
+
+  char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+
+  ENSURE(r != NULL);
 
   strcat(r, a);
   strcat(r, SYSTEM_PATH_SEPARATOR);
   strcat(r, b);
   strcat(r, "\0");
 
+  ENSURE(r[sizeR] == "\0");
+
   return r;
 }
 
 char *pathGetBase(const char *path) {
+  REQUIRE(path != NULL);
+
   size_t textLen = strlen(path);
+  REQUIRE(textLen != 0);
+
   char *p = (char *)&(path[textLen - 1]);
+  ENSURE(p != NULL);
 
   char *base = (char *)path;
   char *sys = SYSTEM_PATH_SEPARATOR;
@@ -99,17 +133,31 @@ char *pathGetBase(const char *path) {
     }
   }
 
+  ENSURE(base != NULL);
+
   size_t sizeR = strlen(base);
-  char *r = defenseCalloc(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  ENSURE(sizeR != 0);
+
+  char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+
+  ENSURE(r != NULL);
+
   strcat(r, ++base);
   r[sizeR - 1] = '\0';
+
+  ENSURE(r[strlen(base)] == "\0");
 
   return r;
 }
 
 char *pathRemoveExt(const char *path) {
+  REQUIRE(path != NULL);
+
   size_t textLen = strlen(path);
+  REQUIRE(textLen != 0);
+
   char *p = (char *)&(path[textLen - 1]);
+  ENSURE(p != NULL);
 
   size_t newLen = 0;
   while (*p != '.') {
@@ -121,8 +169,14 @@ char *pathRemoveExt(const char *path) {
     }
   }
 
+  ENSURE(p != NULL);
+
   size_t reLen = textLen - newLen;
-  char *r = defenseCalloc(1, reLen * sizeof(char), mallocFailAbort, NULL);
+  ENSURE(reLen != 0);
+
+  char *r = DEFENSE_CALLOC(1, reLen * sizeof(char), mallocFailAbort, NULL);
+  ENSURE(r != NULL);
+
   memcpy(r, path, reLen - 1);
 
   r[reLen - 1] = '\0';
@@ -131,40 +185,68 @@ char *pathRemoveExt(const char *path) {
 }
 
 int fileExist(const char *fileName) {
+  REQUIRE(fileName != NULL);
+  REQUIRE(strlen(fileName) != 0);
+
   struct stat st;
   int result = stat(fileName, &st);
   return result == 0;
 }
 
 char *readFile(const char *file) {
+  REQUIRE(file != NULL);
+  REQUIRE(strlen(file) != 0);
+  REQUIRE(fileExist(file) == 1);
+
   char *content = NULL;
   long length;
   FILE *f = fopen(file, "rb");
+
   if (f) {
+    ENSURE(f);
+
     fseek(f, 0, SEEK_END);
     length = ftell(f);
     rewind(f);
-    content =
-        defenseCalloc(1, (length * sizeof(char)) + 1, mallocFailAbort, NULL);
-    if (content) {
-      fread(content, sizeof(char), length, f);
+
+    if (length == 0) {
+      goto clean;
     }
-    fclose(f);
+
+    ENSURE(length != 0);
+
+    content =
+        DEFENSE_CALLOC(1, (length * sizeof(char)) + 1, mallocFailAbort, NULL);
+
+    ENSURE(content);
+    fread(content, sizeof(char), length, f);
 
     // add string end point "\0" to the end of the array
     content[length] = '\0';
+
+  clean:
+    fclose(f);
   }
 
   return content;
 }
 
-void copy_file(const char *src, const char *tar) {
+int copy_file(const char *src, const char *tar) {
+  REQUIRE(src != NULL);
+  REQUIRE(strlen(src) != 0);
+  REQUIRE(fileExist(src) == 1);
+
+  REQUIRE(tar != NULL);
+  REQUIRE(strlen(tar) != 0);
+
   FILE *source, *target;
+
   source = fopen(src, "rb");
   if (source == NULL) {
-    printf("copy source failed\n");
-    exit(1);
+    return 0;
   }
+
+  ENSURE(source != NULL);
 
   fseek(source, 0, SEEK_END);
   long int sizeSrc = ftell(source);
@@ -172,10 +254,11 @@ void copy_file(const char *src, const char *tar) {
 
   target = fopen(tar, "wb");
   if (target == NULL) {
-    printf("copy target failed\n");
     fclose(source);
-    exit(1);
+    return 0;
   }
+
+  ENSURE(target != NULL);
 
   char ch;
   for (int i = 0; i < sizeSrc; i++) {
@@ -185,4 +268,6 @@ void copy_file(const char *src, const char *tar) {
 
   fclose(source);
   fclose(target);
+
+  return 1;
 }
