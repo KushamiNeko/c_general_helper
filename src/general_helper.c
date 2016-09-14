@@ -63,7 +63,9 @@ char *charJoin(const char *a, const char *b, const char *s) {
 
   ENSURE(sizeR != 0);
 
-  char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  // char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  char *r = calloc(1, sizeR * sizeof(char));
+  RETURN_NULL_ON_FAIL(r);
 
   ENSURE(r != NULL);
 
@@ -95,7 +97,9 @@ char *pathJoin(const char *a, const char *b) {
 
   ENSURE(sizeR != 0);
 
-  char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  // char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  char *r = calloc(1, sizeR * sizeof(char));
+  RETURN_NULL_ON_FAIL(r);
 
   ENSURE(r != NULL);
 
@@ -138,7 +142,9 @@ char *pathGetBase(const char *path) {
   size_t sizeR = strlen(base);
   ENSURE(sizeR != 0);
 
-  char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  // char *r = DEFENSE_CALLOC(1, sizeR * sizeof(char), mallocFailAbort, NULL);
+  char *r = calloc(1, sizeR * sizeof(char));
+  RETURN_NULL_ON_FAIL(r);
 
   ENSURE(r != NULL);
 
@@ -174,7 +180,10 @@ char *pathRemoveExt(const char *path) {
   size_t reLen = textLen - newLen;
   ENSURE(reLen != 0);
 
-  char *r = DEFENSE_CALLOC(1, reLen * sizeof(char), mallocFailAbort, NULL);
+  // char *r = DEFENSE_CALLOC(1, reLen * sizeof(char), mallocFailAbort, NULL);
+  char *r = calloc(1, reLen * sizeof(char));
+  RETURN_NULL_ON_FAIL(r);
+
   ENSURE(r != NULL);
 
   memcpy(r, path, reLen - 1);
@@ -215,8 +224,12 @@ char *readFile(const char *file) {
 
     ENSURE(length != 0);
 
-    content =
-        DEFENSE_CALLOC(1, (length * sizeof(char)) + 1, mallocFailAbort, NULL);
+    //    content =
+    //        DEFENSE_CALLOC(1, (length * sizeof(char)) + 1, mallocFailAbort,
+    //        NULL);
+
+    content = calloc(1, (length * sizeof(char)) + 1);
+    RETURN_NULL_ON_FAIL(content);
 
     ENSURE(content);
     fread(content, sizeof(char), length, f);

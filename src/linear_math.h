@@ -20,12 +20,12 @@ typedef void *versor;
 
 /*---------------------------PRINT FUNCTIONS------------------------------*/
 
-void printVec2(const vec2 v);
-void printVec3(const vec3 v);
-void printVec4(const vec4 v);
-void printMat3(const mat3 m);
-void printMat4(const mat4 m);
-void printVersor(const versor q);
+void printVec2(vec2 v);
+void printVec3(vec3 v);
+void printVec4(vec4 v);
+void printMat3(mat3 m);
+void printMat4(mat4 m);
+void printVersor(versor q);
 
 /*----------------------------VECTOR FUNCTIONS----------------------------*/
 
@@ -76,9 +76,9 @@ double distanceSquared(vec3 from, vec3 to);
 
 double distance(vec3 from, vec3 to);
 
-/* double directionToHeading(vec3 d); */
+double directionToHeading(vec3 d);
 
-/* vec3 headingToDirection(double degrees); */
+vec3 headingToDirection(double degrees);
 
 /*-----------------------------MATRIX FUNCTIONS---------------------------*/
 
@@ -111,7 +111,7 @@ mat4 transpose(mat4 m);
 mat4 translate(mat4 m, vec3 v);
 
 mat4 rotateXdeg(mat4 m, double deg);
-                         
+
 mat4 rotateYdeg(mat4 m, double deg);
 
 mat4 rotateZdeg(mat4 m, double deg);

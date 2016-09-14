@@ -38,6 +38,13 @@
     ptr = NULL;           \
   })
 
+#define RETURN_NULL_ON_FAIL(ptr) \
+  ({                             \
+    if (ptr == NULL) {           \
+      return NULL;               \
+    }                            \
+  })
+
 void mallocFailAbort(void *data);
 
 unsigned int euclidGCD(const unsigned int x, const unsigned int y);
