@@ -1,11 +1,72 @@
 #include "gl_helper.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "../../third_party/stb/stb_image.h"
+//#define STB_IMAGE_IMPLEMENTATION
+//#include "../../third_party/stb/stb_image.h"
+
+#include <cmockery/pbc.h>
+
+#ifdef DEBUG
+static void printProgramInfo(GLuint program) {
+  int maxLength = 4096;
+  int actualLength = 0;
+  char programLog[maxLength];
+
+  glGetProgramInfoLog(program, maxLength, &actualLength, programLog);
+  printf("shader info log for GL shader index %u: \n%s\n", program, programLog);
+}
+
+static void printShaderInfo(GLuint shader) {
+  int maxLength = 4096;
+  int actualLength = 0;
+  char shaderLog[maxLength];
+
+  glGetShaderInfoLog(shader, maxLength, &actualLength, shaderLog);
+  printf("shader info log for GL shader index %u: \n%s\n", shader, shaderLog);
+}
+
+void programLinkCheck(GLuint program) {
+  printf("glLinkProgram check\n");
+  glLinkProgram(program);
+
+  // error of program link check
+  int params = -1;
+  glGetProgramiv(program, GL_LINK_STATUS, &params);
+  if (GL_TRUE != params) {
+    printf("ERROR: could not link shader program with index %u\n\n", program);
+    printProgramInfo(program);
+    exit(EXIT_FAILURE);
+  }
+}
+
+void shaderCompileCheck(GLuint shader) {
+  printf("glCompileShader check\n");
+  glCompileShader(shader);
+
+  // check for shader compile error
+  int params = -1;
+  glGetShaderiv(shader, GL_COMPILE_STATUS, &params);
+  if (GL_TRUE != params) {
+    printf("ERROR: GL Shader %i did not compile\n\n", shader);
+    printShaderInfo(shader);
+    exit(EXIT_FAILURE);
+  }
+}
+
+#endif
+
+#ifdef UNIT_TESTING
+#include <cmockery/cmockery_override.h>
+#endif
 
 GLuint generateVBO(const GLuint *vao, const int pointCounts,
                    const int vectorSize, const GLfloat *dataArray,
                    const int loc) {
+  REQUIRE(vao != NULL);
+  REQUIRE(loc != 0);
+  REQUIRE(dataArray != NULL);
+
+  REQUIRE(sizeof(dataArray) == sizeof(GLfloat) * pointCounts * vectorSize);
+
   // generate vbo
   GLuint vbo = 0;
   glGenBuffers(1, &vbo);
@@ -15,19 +76,30 @@ GLuint generateVBO(const GLuint *vao, const int pointCounts,
 
   // bind to the specific vao
   glBindVertexArray(*vao);
+
   // to modified the vertex buffer objects, we need to bind the specific vbo
   // first
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
   // watch out the index and the vector size
   glVertexAttribPointer(loc, vectorSize, GL_FLOAT, GL_FALSE, 0, NULL);
+
   // enable the requested index to be used
   glEnableVertexAttribArray(loc);
+
+  ENSURE(vbo != 0);
 
   return vbo;
 }
 
 void setVBOData(const GLuint *vbo, const int pointCounts, const int vectorSize,
                 const GLfloat *dataArray) {
+  REQUIRE(vbo != NULL);
+  REQUIRE(*vbo != 0);
+  REQUIRE(dataArray != NULL);
+
+  REQUIRE(sizeof(dataArray) == sizeof(GLfloat) * pointCounts * vectorSize);
+
   glBindBuffer(GL_ARRAY_BUFFER, *vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * pointCounts * vectorSize,
                dataArray, GL_STATIC_DRAW);
@@ -35,137 +107,158 @@ void setVBOData(const GLuint *vbo, const int pointCounts, const int vectorSize,
 
 void generateShader(const GLuint *shaderProgram, const char *shaderFile,
                     const GLenum shaderType) {
+  REQUIRE(shaderFile != NULL);
+  REQUIRE(shaderProgram != NULL);
+  REQUIRE(shaderType == GL_VERTEX_SHADER || shaderType == GL_FRAGMENT_SHADER);
+
+  REQUIRE(g_file_test(shaderFile, G_FILE_TEST_EXISTS));
+
   GLuint shader;
   switch (shaderType) {
-  case GL_VERTEX_SHADER: {
-    shader = glCreateShader(GL_VERTEX_SHADER);
-    break;
+    case GL_VERTEX_SHADER: {
+      shader = glCreateShader(GL_VERTEX_SHADER);
+      break;
+    }
+    case GL_FRAGMENT_SHADER: {
+      shader = glCreateShader(GL_FRAGMENT_SHADER);
+      break;
+    }
+    default:
+      printf("Unexpected shader type!\n");
+      exit(EXIT_FAILURE);
+      break;
   }
-  case GL_FRAGMENT_SHADER: {
-    shader = glCreateShader(GL_FRAGMENT_SHADER);
-    break;
-  }
-  }
+
   glShaderSource(shader, 1, &shaderFile, NULL);
 
   // original GL compile shader function call
   // glCompileShader(fs);
 
-  // wrapper function with gl shader compile and error check
-  __CompileShader(shader);
+  // wrapper MACRO with gl shader compile and error check
+  COMPILE_GL_SHADER(shader);
+
   glAttachShader(*shaderProgram, shader);
 }
 
 static int getTextureSlotInt(const GLenum textureSlot) {
   switch (textureSlot) {
-  case GL_TEXTURE0: {
-    return 0;
-    break;
-  }
-  case GL_TEXTURE1: {
-    return 1;
-    break;
-  }
-  case GL_TEXTURE2: {
-    return 2;
-    break;
-  }
-  case GL_TEXTURE3: {
-    return 3;
-    break;
-  }
-  case GL_TEXTURE4: {
-    return 4;
-    break;
-  }
-  case GL_TEXTURE5: {
-    return 5;
-    break;
-  }
-  case GL_TEXTURE6: {
-    return 6;
-    break;
-  }
-  case GL_TEXTURE7: {
-    return 7;
-    break;
-  }
-  case GL_TEXTURE8: {
-    return 8;
-    break;
-  }
-  case GL_TEXTURE9: {
-    return 9;
-    break;
-  }
-  case GL_TEXTURE10: {
-    return 10;
-    break;
-  }
-  case GL_TEXTURE11: {
-    return 11;
-    break;
-  }
-  case GL_TEXTURE12: {
-    return 12;
-    break;
-  }
-  case GL_TEXTURE13: {
-    return 13;
-    break;
-  }
-  case GL_TEXTURE14: {
-    return 14;
-    break;
-  }
-  case GL_TEXTURE15: {
-    return 15;
-    break;
-  }
-  case GL_TEXTURE16: {
-    return 16;
-    break;
-  }
-  case GL_TEXTURE17: {
-    return 17;
-    break;
-  }
-  case GL_TEXTURE18: {
-    return 18;
-    break;
-  }
-  case GL_TEXTURE19: {
-    return 19;
-    break;
-  }
-  case GL_TEXTURE20: {
-    return 20;
-    break;
-  }
+    case GL_TEXTURE0: {
+      return 0;
+      break;
+    }
+    case GL_TEXTURE1: {
+      return 1;
+      break;
+    }
+    case GL_TEXTURE2: {
+      return 2;
+      break;
+    }
+    case GL_TEXTURE3: {
+      return 3;
+      break;
+    }
+    case GL_TEXTURE4: {
+      return 4;
+      break;
+    }
+    case GL_TEXTURE5: {
+      return 5;
+      break;
+    }
+    case GL_TEXTURE6: {
+      return 6;
+      break;
+    }
+    case GL_TEXTURE7: {
+      return 7;
+      break;
+    }
+    case GL_TEXTURE8: {
+      return 8;
+      break;
+    }
+    case GL_TEXTURE9: {
+      return 9;
+      break;
+    }
+    case GL_TEXTURE10: {
+      return 10;
+      break;
+    }
+    case GL_TEXTURE11: {
+      return 11;
+      break;
+    }
+    case GL_TEXTURE12: {
+      return 12;
+      break;
+    }
+    case GL_TEXTURE13: {
+      return 13;
+      break;
+    }
+    case GL_TEXTURE14: {
+      return 14;
+      break;
+    }
+    case GL_TEXTURE15: {
+      return 15;
+      break;
+    }
+    case GL_TEXTURE16: {
+      return 16;
+      break;
+    }
+    case GL_TEXTURE17: {
+      return 17;
+      break;
+    }
+    case GL_TEXTURE18: {
+      return 18;
+      break;
+    }
+    case GL_TEXTURE19: {
+      return 19;
+      break;
+    }
+    case GL_TEXTURE20: {
+      return 20;
+      break;
+    }
 
-  default: {
-    return -1;
-    break;
-  }
+    default: {
+      return -1;
+      break;
+    }
   }
 }
 
 int loadTexture(const char *textureFile, GLuint *shaderProgram,
                 GLenum textureSlot, GLuint *tex, GLint *texLoc) {
+  REQUIRE(g_file_test(textureFile, G_FILE_TEST_EXISTS));
+  REQUIRE(shaderProgram != NULL);
+  REQUIRE(*shaderProgram != 0);
+  REQUIRE(tex != NULL);
+  REQUIRE(*tex != 0);
+  REQUIRE(texLoc != NULL);
+  REQUIRE(*texLoc != 0);
+  REQUIRE(textureSlot != 0);
+
   int x, y, n;
   int forceChannels = 4;
   unsigned char *imageData = stbi_load(textureFile, &x, &y, &n, forceChannels);
 
   if (!imageData) {
-    printf("ERROR: counld not load %s\n", textureFile);
+    // printf("ERROR: counld not load %s\n", textureFile);
     return 0;
   }
 
+  ENSURE(imageData);
+
   // flip the image data upside down because OpenGL expects that the 0 on the
-  // y
-  // axis to be at the bottom of the texture, but the image usually have y
-  // axis
-  // 0 at the top
+  // y axis to be at the bottom of the texture, but the image usually have y
+  // axis 0 at the top
 
   int bytesWidth = x * 4;
   unsigned char *top = NULL;
@@ -185,10 +278,12 @@ int loadTexture(const char *textureFile, GLuint *shaderProgram,
     }
   }
 
-  // active the first OpenGL texture slot
+  // active the OpenGL texture slot
   glActiveTexture(textureSlot);
+
   int slotIndex = getTextureSlotInt(textureSlot);
-  // printf("texture: %s, slot index: %d\n", textureName, slotIndex);
+  ENSURE(slotIndex != -1);
+
   glBindTexture(GL_TEXTURE_2D, *tex);
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE,
@@ -203,12 +298,15 @@ int loadTexture(const char *textureFile, GLuint *shaderProgram,
   glActiveTexture(textureSlot);
   glUseProgram(*shaderProgram);
   glUniform1i(*texLoc, slotIndex);
+
   return 1;
 }
 
 GLuint generateGLTexture() {
   GLuint tex = 0;
   glGenTextures(1, &tex);
+
+  ENSURE(tex != 0);
 
   return tex;
 }
@@ -218,7 +316,9 @@ GLint generateTexLoc(GLuint *shaderProgram, const char *textureName) {
   return texLoc;
 }
 
-GLuint genBakingBuffer(const unsigned int renderSize) {
+GLuint generateBakingBuffer(const unsigned int renderSize) {
+  REQUIRE(renderSize > 0);
+
   GLuint fb;
   glGenFramebuffers(1, &fb);
   glBindFramebuffer(GL_FRAMEBUFFER, fb);
@@ -247,48 +347,11 @@ GLuint genBakingBuffer(const unsigned int renderSize) {
   status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
   if (status != GL_FRAMEBUFFER_COMPLETE) {
-    printf("Failed to generate the framebuffer!\n");
+    // printf("Failed to generate the framebuffer!\n");
+    return 0;
   }
+
+  ENSURE(fb != 0);
 
   return fb;
 }
-
-#if __GL_DEBUG
-void programLinkCheck(GLuint program) {
-  printf("glLinkProgram check\n");
-  glLinkProgram(program);
-
-  // error of program link check
-  int params = -1;
-  glGetProgramiv(program, GL_LINK_STATUS, &params);
-  if (GL_TRUE != params) {
-    printf("ERROR: could not link shader program with index %u\n", program);
-    //_print_program_info_log(program);
-    exit(1);
-  }
-}
-
-void print_shader_info_log(GLuint shader) {
-  int max_length = 2048;
-  int actual_length = 0;
-  char shader_log[2048];
-
-  glGetShaderInfoLog(shader, max_length, &actual_length, shader_log);
-  printf("shader info log for GL shader index %u: \n%s\n", shader, shader_log);
-}
-
-void shaderCompileCheck(GLuint shader) {
-  printf("glCompileShader check\n");
-  glCompileShader(shader);
-
-  // check for shader compile error
-  int params = -1;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &params);
-  if (GL_TRUE != params) {
-    printf("ERROR: GL Shader %i did not compile\n", shader);
-    // print_shader_info_log(shader);
-    exit(1);
-  }
-}
-
-#endif

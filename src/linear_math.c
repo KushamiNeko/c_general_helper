@@ -145,21 +145,21 @@ inline static int versorSizeCheck(versor ve) {
 /*-----------------------------PRINT FUNCTIONS--------------------------------*/
 
 void printVec2(vec2 v) {
-  REQUIRE(vec2_size_check(v));
+  REQUIRE(vec2SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
   printf("[%.4f, %.4f]\n", vr->data[0], vr->data[1]);
 }
 
 void printVec3(vec3 v) {
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
   printf("[%.4f, %.4f, %.4f]\n", vr->data[0], vr->data[1], vr->data[2]);
 }
 
 void printVec4(vec4 v) {
-  REQUIRE(vec4_size_check(v));
+  REQUIRE(vec4SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
   printf("[%.4f, %.4f, %.4f, %.4f]\n", vr->data[0], vr->data[1], vr->data[2],
@@ -167,7 +167,7 @@ void printVec4(vec4 v) {
 }
 
 void printMat3(mat3 m) {
-  REQUIRE(mat3_size_check(m));
+  REQUIRE(mat3SizeCheck(m));
 
   struct Representation *mr = (struct Representation *)m;
 
@@ -177,7 +177,7 @@ void printMat3(mat3 m) {
 }
 
 void printMat4(mat4 m) {
-  REQUIRE(mat4_size_check(m));
+  REQUIRE(mat4SizeCheck(m));
 
   struct Representation *mr = (struct Representation *)m;
 
@@ -192,7 +192,7 @@ void printMat4(mat4 m) {
 }
 
 void printVersor(versor q) {
-  REQUIRE(versor_size_check(q));
+  REQUIRE(versorSizeCheck(q));
 
   struct Representation *qr = (struct Representation *)q;
   printf("[%.4f ,%.4f, %.4f, %.4f]\n", qr->data[0], qr->data[1], qr->data[2],
@@ -252,7 +252,7 @@ vec3 vec3New(double x, double y, double z) {
 
 double vec3Length(vec3 v) {
   REQUIRE(v != NULL);
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
 
@@ -263,7 +263,7 @@ double vec3Length(vec3 v) {
 // squared length
 double vec3LengthSquare(vec3 v) {
   REQUIRE(v != NULL);
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
 
@@ -273,7 +273,7 @@ double vec3LengthSquare(vec3 v) {
 
 vec3 vec3Normalize(vec3 v) {
   REQUIRE(v != NULL);
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *rv = representationNew(VEC3_SIZE);
   RETURN_NULL_ON_FAIL(rv);
@@ -302,8 +302,8 @@ re:
 vec3 vec3Add(vec3 first, vec3 second) {
   REQUIRE(first != NULL);
   REQUIRE(second != NULL);
-  REQUIRE(vec3_size_check(first));
-  REQUIRE(vec3_size_check(second));
+  REQUIRE(vec3SizeCheck(first));
+  REQUIRE(vec3SizeCheck(second));
 
   struct Representation *firstr = (struct Representation *)first;
   struct Representation *secondr = (struct Representation *)second;
@@ -321,8 +321,8 @@ vec3 vec3Add(vec3 first, vec3 second) {
 }
 
 /* void vec3AddOver(_FLOAT *first, const _FLOAT *second) { */
-/*   __vec3_size_check(first); */
-/*   __vec3_size_check(second); */
+/*   __vec3SizeCheck(first); */
+/*   __vec3SizeCheck(second); */
 /*   first[0] += second[0]; */
 /*   first[1] += second[1]; */
 /*   first[2] += second[2]; */
@@ -331,8 +331,8 @@ vec3 vec3Add(vec3 first, vec3 second) {
 vec3 vec3Sub(vec3 first, vec3 second) {
   REQUIRE(first != NULL);
   REQUIRE(second != NULL);
-  REQUIRE(vec3_size_check(first));
-  REQUIRE(vec3_size_check(second));
+  REQUIRE(vec3SizeCheck(first));
+  REQUIRE(vec3SizeCheck(second));
 
   struct Representation *firstr = (struct Representation *)first;
   struct Representation *secondr = (struct Representation *)second;
@@ -350,8 +350,8 @@ vec3 vec3Sub(vec3 first, vec3 second) {
 }
 
 /* void vec3SubOver(_FLOAT *first, const _FLOAT *second) { */
-/*   __vec3_size_check(first); */
-/*   __vec3_size_check(second); */
+/*   __vec3SizeCheck(first); */
+/*   __vec3SizeCheck(second); */
 /*   first[0] -= second[0]; */
 /*   first[1] -= second[1]; */
 /*   first[2] -= second[2]; */
@@ -359,7 +359,7 @@ vec3 vec3Sub(vec3 first, vec3 second) {
 
 vec3 vec3AddFloat(vec3 v, double num) {
   REQUIRE(v != NULL);
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
 
@@ -376,7 +376,7 @@ vec3 vec3AddFloat(vec3 v, double num) {
 }
 
 /* void vec3AddFloatOver(_FLOAT *v, _FLOAT num) { */
-/*   __vec3_size_check(v); */
+/*   __vec3SizeCheck(v); */
 /*   _FLOAT *vc = zeroVec3(); */
 /*   vc[0] += num; */
 /*   vc[1] += num; */
@@ -385,7 +385,7 @@ vec3 vec3AddFloat(vec3 v, double num) {
 
 vec3 vec3SubFloat(vec3 v, double num) {
   REQUIRE(v != NULL);
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
 
@@ -402,7 +402,7 @@ vec3 vec3SubFloat(vec3 v, double num) {
 }
 
 /* void vec3SubFloatOver(_FLOAT *v, _FLOAT num) { */
-/*   __vec3_size_check(v); */
+/*   __vec3SizeCheck(v); */
 /*   _FLOAT *vc = zeroVec3(); */
 /*   vc[0] -= num; */
 /*   vc[1] -= num; */
@@ -411,7 +411,7 @@ vec3 vec3SubFloat(vec3 v, double num) {
 
 vec3 vec3MultFloat(vec3 v, double num) {
   REQUIRE(v != NULL);
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
 
@@ -429,7 +429,7 @@ vec3 vec3MultFloat(vec3 v, double num) {
 
 vec3 vec3DevFloat(vec3 v, double num) {
   REQUIRE(v != NULL);
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   REQUIRE(num != 0.0f);
 
@@ -448,7 +448,7 @@ vec3 vec3DevFloat(vec3 v, double num) {
 }
 
 /* void vec3MultFloatOver(_FLOAT *v, _FLOAT num) { */
-/*   __vec3_size_check(v); */
+/*   __vec3SizeCheck(v); */
 
 /*   _FLOAT *vc = zeroVec3(); */
 
@@ -458,7 +458,7 @@ vec3 vec3DevFloat(vec3 v, double num) {
 /* } */
 
 /* void vec3DevFloatOver(_FLOAT *v, _FLOAT num) { */
-/*   __vec3_size_check(v); */
+/*   __vec3SizeCheck(v); */
 /*   assert(num); */
 /*   _FLOAT *vc = zeroVec3(); */
 /*   vc[0] /= num; */
@@ -468,7 +468,7 @@ vec3 vec3DevFloat(vec3 v, double num) {
 
 vec3 vec3Copy(vec3 source) {
   REQUIRE(source != NULL);
-  REQUIRE(vec3_size_check(source));
+  REQUIRE(vec3SizeCheck(source));
 
   struct Representation *sourcer = (struct Representation *)source;
 
@@ -489,8 +489,8 @@ vec3 vec3Copy(vec3 source) {
 double vec3Dot(vec3 a, vec3 b) {
   REQUIRE(a != NULL);
   REQUIRE(b != NULL);
-  REQUIRE(vec3_size_check(a));
-  REQUIRE(vec3_size_check(b));
+  REQUIRE(vec3SizeCheck(a));
+  REQUIRE(vec3SizeCheck(b));
 
   struct Representation *ar = (struct Representation *)a;
   struct Representation *br = (struct Representation *)b;
@@ -502,8 +502,8 @@ double vec3Dot(vec3 a, vec3 b) {
 vec3 vec3Cross(vec3 a, vec3 b) {
   REQUIRE(a != NULL);
   REQUIRE(b != NULL);
-  REQUIRE(vec3_size_check(a));
-  REQUIRE(vec3_size_check(b));
+  REQUIRE(vec3SizeCheck(a));
+  REQUIRE(vec3SizeCheck(b));
 
   struct Representation *ar = (struct Representation *)a;
   struct Representation *br = (struct Representation *)b;
@@ -523,8 +523,8 @@ vec3 vec3Cross(vec3 a, vec3 b) {
 double distanceSquared(vec3 from, vec3 to) {
   REQUIRE(from != NULL);
   REQUIRE(to != NULL);
-  REQUIRE(vec3_size_check(from));
-  REQUIRE(vec3_size_check(to));
+  REQUIRE(vec3SizeCheck(from));
+  REQUIRE(vec3SizeCheck(to));
 
   struct Representation *fromr = (struct Representation *)from;
   struct Representation *tor = (struct Representation *)to;
@@ -539,8 +539,8 @@ double distanceSquared(vec3 from, vec3 to) {
 double distance(vec3 from, vec3 to) {
   REQUIRE(from != NULL);
   REQUIRE(to != NULL);
-  REQUIRE(vec3_size_check(from));
-  REQUIRE(vec3_size_check(to));
+  REQUIRE(vec3SizeCheck(from));
+  REQUIRE(vec3SizeCheck(to));
 
   struct Representation *fromr = (struct Representation *)from;
   struct Representation *tor = (struct Representation *)to;
@@ -557,11 +557,11 @@ double distance(vec3 from, vec3 to) {
 
 double directionToHeading(vec3 v) {
   REQUIRE(v != NULL);
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
 
-  return atan2(-vr[0], -vr[2]) * ONE_RAD_IN_DEG;
+  return atan2(-vr->data[0], -vr->data[2]) * ONE_RAD_IN_DEG;
 }
 
 // converts a heading in degrees into an un-normalised direction
@@ -570,14 +570,16 @@ double directionToHeading(vec3 v) {
 vec3 headingToDirection(double degrees) {
   double rad = degrees * ONE_DEG_IN_RAD;
 
-  vec3 vc = zeroVec3();
+  struct Representation *vc = representationNew(VEC3_SIZE);
   RETURN_NULL_ON_FAIL(vc);
+
+  ENSURE(vc != NULL);
 
   vc->data[0] = -sinf(rad);
   vc->data[1] = 0.0f;
   vc->data[2] = -cosf(rad);
 
-  return vc;
+  return (vec3)vc;
 }
 
 /*-----------------------------MATRIX FUNCTIONS-------------------------------*/
@@ -641,8 +643,8 @@ mat4 identityMat4() {
 void mat4ComponentsAssign(mat4 target, mat4 source) {
   REQUIRE(target != NULL);
   REQUIRE(source != NULL);
-  REQUIRE(mat4_size_check(target));
-  REQUIRE(mat4_size_check(source));
+  REQUIRE(mat4SizeCheck(target));
+  REQUIRE(mat4SizeCheck(source));
 
   struct Representation *targetr = (struct Representation *)target;
   struct Representation *sourcer = (struct Representation *)source;
@@ -671,8 +673,8 @@ void matFree(void *m) {
 vec4 mat4MulVec4(mat4 m, vec4 v) {
   REQUIRE(m != NULL);
   REQUIRE(v != NULL);
-  REQUIRE(mat4_size_check(m));
-  REQUIRE(vec4_size_check(v));
+  REQUIRE(mat4SizeCheck(m));
+  REQUIRE(vec4SizeCheck(v));
 
   struct Representation *mr = (struct Representation *)m;
   struct Representation *vr = (struct Representation *)v;
@@ -701,8 +703,8 @@ vec4 mat4MulVec4(mat4 m, vec4 v) {
 mat4 mat4MulMat4(mat4 first, mat4 second) {
   REQUIRE(first != NULL);
   REQUIRE(second != NULL);
-  REQUIRE(mat4_size_check(first));
-  REQUIRE(mat4_size_check(second));
+  REQUIRE(mat4SizeCheck(first));
+  REQUIRE(mat4SizeCheck(second));
 
   struct Representation *firstr = (struct Representation *)first;
   struct Representation *secondr = (struct Representation *)second;
@@ -741,7 +743,7 @@ mat4 mat4MulMat4(mat4 first, mat4 second) {
 
 mat4 mat4Copy(mat4 m) {
   REQUIRE(m != NULL);
-  REQUIRE(mat4_size_check(m));
+  REQUIRE(mat4SizeCheck(m));
 
   struct Representation *mr = (struct Representation *)m;
 
@@ -761,7 +763,7 @@ mat4 mat4Copy(mat4 m) {
 
 double determinant(mat4 m) {
   REQUIRE(m != NULL);
-  REQUIRE(mat4_size_check(m));
+  REQUIRE(mat4SizeCheck(m));
 
   struct Representation *mr = (struct Representation *)m;
 
@@ -794,7 +796,7 @@ double determinant(mat4 m) {
 
 mat4 inverse(mat4 m) {
   REQUIRE(m != NULL);
-  REQUIRE(mat4_size_check(m));
+  REQUIRE(mat4SizeCheck(m));
 
   double det = determinant(m);
   // there is no inverse if determinant is zero
@@ -935,7 +937,7 @@ mat4 inverse(mat4 m) {
 
 mat4 transpose(mat4 m) {
   REQUIRE(m != NULL);
-  REQUIRE(mat4_size_check(m));
+  REQUIRE(mat4SizeCheck(m));
 
   struct Representation *mr = (struct Representation *)m;
 
@@ -970,8 +972,8 @@ mat4 transpose(mat4 m) {
 mat4 translate(mat4 m, vec3 v) {
   REQUIRE(m != NULL);
   REQUIRE(v != NULL);
-  REQUIRE(mat4_size_check(m));
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(mat4SizeCheck(m));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
 
@@ -995,7 +997,7 @@ mat4 translate(mat4 m, vec3 v) {
 // rotate around x axis by an angle in degrees
 mat4 rotateXdeg(mat4 m, double deg) {
   REQUIRE(m != NULL);
-  REQUIRE(mat4_size_check(m));
+  REQUIRE(mat4SizeCheck(m));
 
   // convert to radians
   double rad = deg * ONE_DEG_IN_RAD;
@@ -1020,7 +1022,7 @@ mat4 rotateXdeg(mat4 m, double deg) {
 // rotate around y axis by an angle in degrees
 mat4 rotateYdeg(mat4 m, double deg) {
   REQUIRE(m != NULL);
-  REQUIRE(mat4_size_check(m));
+  REQUIRE(mat4SizeCheck(m));
 
   // convert to radians
   double rad = deg * ONE_DEG_IN_RAD;
@@ -1046,7 +1048,7 @@ mat4 rotateYdeg(mat4 m, double deg) {
 // rotate around z axis by an angle in degrees
 mat4 rotateZdeg(mat4 m, double deg) {
   REQUIRE(m != NULL);
-  REQUIRE(mat4_size_check(m));
+  REQUIRE(mat4SizeCheck(m));
 
   // convert to radians
   double rad = deg * ONE_DEG_IN_RAD;
@@ -1073,8 +1075,8 @@ mat4 rotateZdeg(mat4 m, double deg) {
 mat4 scale(mat4 m, vec3 v) {
   REQUIRE(m != NULL);
   REQUIRE(v != NULL);
-  REQUIRE(mat4_size_check(m));
-  REQUIRE(vec3_size_check(v));
+  REQUIRE(mat4SizeCheck(m));
+  REQUIRE(vec3SizeCheck(v));
 
   struct Representation *vr = (struct Representation *)v;
 
@@ -1102,9 +1104,9 @@ mat4 lookAt(vec3 camPos, vec3 tarPos, vec3 up) {
   REQUIRE(camPos != NULL);
   REQUIRE(tarPos != NULL);
   REQUIRE(up != NULL);
-  REQUIRE(vec3_size_check(camPos));
-  REQUIRE(vec3_size_check(tarPos));
-  REQUIRE(vec3_size_check(up));
+  REQUIRE(vec3SizeCheck(camPos));
+  REQUIRE(vec3SizeCheck(tarPos));
+  REQUIRE(vec3SizeCheck(up));
 
   struct Representation *camPosr = (struct Representation *)camPos;
   //  struct Representation *tarPosr = (struct Representation *)tarPos;
@@ -1248,7 +1250,7 @@ void versorFree(void *ve) {
 
 versor versorCopy(versor source) {
   REQUIRE(source != NULL);
-  REQUIRE(versor_size_check(source));
+  REQUIRE(versorSizeCheck(source));
 
   struct Representation *sourcer = (struct Representation *)source;
 
@@ -1266,7 +1268,7 @@ versor versorCopy(versor source) {
 }
 
 versor versorDevFloat(versor ve, double num) {
-  REQUIRE(versor_size_check(ve));
+  REQUIRE(versorSizeCheck(ve));
   REQUIRE(num != 0.0f);
 
   struct Representation *ver = (struct Representation *)ve;
@@ -1284,7 +1286,7 @@ versor versorDevFloat(versor ve, double num) {
 }
 
 versor versorMulFloat(versor ve, double num) {
-  REQUIRE(versor_size_check(ve));
+  REQUIRE(versorSizeCheck(ve));
 
   struct Representation *ver = (struct Representation *)ve;
 
@@ -1301,7 +1303,7 @@ versor versorMulFloat(versor ve, double num) {
 }
 
 versor versorNormalize(versor q) {
-  REQUIRE(versor_size_check(q));
+  REQUIRE(versorSizeCheck(q));
 
   struct Representation *qr = (struct Representation *)q;
 
@@ -1331,8 +1333,8 @@ versor versorNormalize(versor q) {
 versor versorMulVersor(versor first, versor second) {
   REQUIRE(first != NULL);
   REQUIRE(second != NULL);
-  REQUIRE(versor_size_check(first));
-  REQUIRE(versor_size_check(second));
+  REQUIRE(versorSizeCheck(first));
+  REQUIRE(versorSizeCheck(second));
 
   struct Representation *firstr = (struct Representation *)first;
   struct Representation *secondr = (struct Representation *)second;
@@ -1367,8 +1369,8 @@ versor versorMulVersor(versor first, versor second) {
 versor versorAdd(versor first, versor second) {
   REQUIRE(first != NULL);
   REQUIRE(second != NULL);
-  REQUIRE(versor_size_check(first));
-  REQUIRE(versor_size_check(second));
+  REQUIRE(versorSizeCheck(first));
+  REQUIRE(versorSizeCheck(second));
 
   struct Representation *firstr = (struct Representation *)first;
   struct Representation *secondr = (struct Representation *)second;
@@ -1410,7 +1412,7 @@ versor quatFromAxisDeg(double degrees, double x, double y, double z) {
 
 mat4 quatToMat4(versor q) {
   REQUIRE(q != NULL);
-  REQUIRE(versor_size_check(q));
+  REQUIRE(versorSizeCheck(q));
 
   struct Representation *qr = (struct Representation *)q;
 
@@ -1446,8 +1448,8 @@ mat4 quatToMat4(versor q) {
 double versorDot(versor q, versor r) {
   REQUIRE(q != NULL);
   REQUIRE(r != NULL);
-  REQUIRE(versor_size_check(q));
-  REQUIRE(versor_size_check(r));
+  REQUIRE(versorSizeCheck(q));
+  REQUIRE(versorSizeCheck(r));
 
   struct Representation *qr = (struct Representation *)q;
   struct Representation *rr = (struct Representation *)r;
@@ -1459,8 +1461,8 @@ double versorDot(versor q, versor r) {
 versor versorSlerp(versor q, versor r, double t) {
   REQUIRE(q != NULL);
   REQUIRE(r != NULL);
-  REQUIRE(versor_size_check(q));
-  REQUIRE(versor_size_check(r));
+  REQUIRE(versorSizeCheck(q));
+  REQUIRE(versorSizeCheck(r));
 
   struct Representation *qr = (struct Representation *)q;
   struct Representation *rr = (struct Representation *)r;

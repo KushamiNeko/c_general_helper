@@ -66,9 +66,13 @@ static void checkFileExistTest(void **state) {
 }
 
 static void memoryLeakTest(void **state) {
-  int *p = defenseCalloc(10, sizeof(int), mallocFailAbort, NULL);
+  int *p = DEFENSE_CALLOC(10, sizeof(int), mallocFailAbort, NULL);
   *p = 0;
   free(p);
+
+  int *t = DEFENSE_MALLOC(10 * sizeof(int), mallocFailAbort, NULL);
+  *t = 0;
+  free(t);
 }
 
 static void charJoinTest(void **state) {

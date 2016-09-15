@@ -11,10 +11,11 @@
 #define SYSTEM_PATH_SEPARATOR "\\"
 #else
 #define SYSTEM_PATH_SEPARATOR "/"
+#endif
 
 #define DEFENSE_CALLOC(num, size, cbFail, cbData) \
   ({                                              \
-    void* ptr;                                    \
+    void *ptr;                                    \
     ptr = calloc(num, size);                      \
     if (ptr == NULL) {                            \
       cbFail(cbData);                             \
@@ -24,7 +25,7 @@
 
 #define DEFENSE_MALLOC(size, cbFail, cbData) \
   ({                                         \
-    void* ptr;                               \
+    void *ptr;                               \
     ptr = malloc(size);                      \
     if (ptr == NULL) {                       \
       cbFail(cbData);                        \

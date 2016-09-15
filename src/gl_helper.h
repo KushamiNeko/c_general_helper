@@ -1,52 +1,48 @@
 #ifndef GL_HELPER_H
 #define GL_HELPER_H
 
-#define __GL_DEBUG 1
-#define __GL_VIEWPORT 2
+#define GL_VIEWPORT_SIZE 2
+
+#include <glib-2.0/glib.h>
 
 #include <GL/glew.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-extern GLuint generateVBO(const GLuint *vao, const int point_count,
-                          const int vector_size, const GLfloat *data_array,
-                          const int loc);
+#include <stb_image.h>
 
-extern void setVBOData(const GLuint *vbo, const int point_count,
-                       const int vector_size, const GLfloat *dataArray);
+#ifdef DEBUG
 
-extern char *readShader(const char *file);
+void programLinkCheck(GLuint program);
 
-extern void generateShader(const GLuint *shader_program,
-                           const char *shader_file, const GLenum shader_type);
+void shaderCompileCheck(GLuint shader);
 
-// int loadTexture(const char *textureFile, GLuint *shaderProgram,
-//                 GLenum textureSlot, const char *textureName);
+#define LINK_GL_SHADER_PROGRAM(expr) programLinkCheck(expr)
+#define COMPILE_GL_SHADER(expr) shaderCompileCheck(expr)
 
-extern int loadTexture(const char *textureFile, GLuint *shaderProgram,
-                       GLenum textureSlot, GLuint *tex, GLint *texLoc);
-
-extern GLuint generateGLTexture();
-
-extern GLint generateTexLoc(GLuint *shaderProgram, const char *textureName);
-
-// extern void bindGLTexture(unsigned char *imageData, int width, int height,
-//                           GLenum textureSlot, GLuint tex);
-
-extern void bindToTexLoc(GLuint texLoc, GLenum textureSlot,
-                         GLuint *shaderProgram);
-
-#if __GL_DEBUG
-extern void programLinkCheck(GLuint program);
-
-extern void shaderCompileCheck(GLuint shader);
-
-#define __LinkProgram(expr) programLinkCheck(expr)
-#define __CompileShader(expr) shaderCompileCheck(expr)
 #else
-#define __LinkProgram(expr) glLinkProgram(expr)
-#define __CompileShader(expr) glCompileShader(expr)
+
+#define LINK_GL_SHADER_PROGRAM(expr) glLinkProgram(expr)
+#define COMPILE_GL_SHADER(expr) glCompileShader(expr)
 #endif
 
 #endif
+
+GLuint generateVBO(const GLuint *vao, const int point_count,
+                   const int vector_size, const GLfloat *data_array,
+                   const int loc);
+
+void setVBOData(const GLuint *vbo, const int point_count, const int vector_size,
+                const GLfloat *dataArray);
+
+void generateShader(const GLuint *shader_program, const char *shader_file,
+                    const GLenum shader_type);
+
+int loadTexture(const char *textureFile, GLuint *shaderProgram,
+                GLenum textureSlot, GLuint *tex, GLint *texLoc);
+
+GLuint generateGLTexture();
+
+GLint generateTexLoc(GLuint *shaderProgram, const char *textureName);
+

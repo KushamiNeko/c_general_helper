@@ -46,15 +46,15 @@ double fit01(double src, double newMin, double newMax) {
 char *charJoin(const char *a, const char *b, const char *s) {
   REQUIRE(a != NULL);
   REQUIRE(b != NULL);
-  REQUIRE(c != NULL);
+  REQUIRE(s != NULL);
 
   size_t sizeA = strlen(a);
   size_t sizeB = strlen(b);
   size_t sizeS = strlen(s);
 
-  REQUIRE(sizeA != 0);
-  REQUIRE(sizeB != 0);
-  REQUIRE(sizeC != 0);
+  // REQUIRE(sizeA != 0);
+  // REQUIRE(sizeB != 0);
+  // REQUIRE(sizeS != 0);
 
   size_t sizeR = sizeA + sizeB + sizeS + 1;
   if (sizeR == 1) {
@@ -78,7 +78,7 @@ char *charJoin(const char *a, const char *b, const char *s) {
   strcat(r, b);
   strcat(r, "\0");
 
-  ENSURE(r[sizeR] == "\0");
+  ENSURE(r[sizeR - 1] == '\0');
 
   return r;
 }
@@ -108,7 +108,7 @@ char *pathJoin(const char *a, const char *b) {
   strcat(r, b);
   strcat(r, "\0");
 
-  ENSURE(r[sizeR] == "\0");
+  ENSURE(r[sizeR - 1] == '\0');
 
   return r;
 }
@@ -151,7 +151,7 @@ char *pathGetBase(const char *path) {
   strcat(r, ++base);
   r[sizeR - 1] = '\0';
 
-  ENSURE(r[strlen(base)] == "\0");
+  ENSURE(r[strlen(base)] == '\0');
 
   return r;
 }
