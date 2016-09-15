@@ -123,11 +123,38 @@ static void charJoinTest(void **state) {
   }
 }
 
+static void *returnNull(void *add) {
+  void *p = (void *)0x0000ee;
+  RETURN_NULL_ON_FAIL(add);
+
+  return p;
+}
+
+static void nullReturnTest(void **state) {
+  void *p = (void *)0x0000ff;
+  assert(p != NULL);
+  p = returnNull((void *)0x0000ff);
+  assert(p != NULL);
+  p = returnNull(NULL);
+  assert(p == NULL);
+
+  void *t = malloc(100000000);
+  assert(t != NULL);
+  free(t);
+  assert(t != NULL);
+
+  t = malloc(100000000);
+  assert(t != NULL);
+  DEFENSE_FREE(t);
+  assert(t == NULL);
+}
+
 int main(int argc, char **argv) {
   const UnitTest tests[] = {
       unit_test(pathJoinTest),      unit_test(pathGetBaseTest),
       unit_test(pathRemoveExtTest), unit_test(checkFileExistTest),
       unit_test(memoryLeakTest),    unit_test(charJoinTest),
+      unit_test(nullReturnTest),
   };
 
   return run_tests(tests, "general_helper");
