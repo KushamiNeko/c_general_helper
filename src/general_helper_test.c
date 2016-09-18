@@ -147,6 +147,7 @@ static void nullReturnTest(void **state) {
   assert(t != NULL);
   DEFENSE_FREE(t);
   assert(t == NULL);
+
 }
 
 int main(int argc, char **argv) {

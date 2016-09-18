@@ -6,9 +6,9 @@
 #include <cmockery/cmockery_override.h>
 #endif
 
-#define TAU 2.0f * M_PI
-#define ONE_DEG_IN_RAD ((2.0f * M_PI) / 360.0f)  // 0.017444444
-#define ONE_RAD_IN_DEG (360.0f / (2.0f * M_PI))  // 57.2957795
+// #define TAU 2.0f * M_PI
+// #define ONE_DEG_IN_RAD ((2.0f * M_PI) / 360.0f)  // 0.017444444
+// #define ONE_RAD_IN_DEG (360.0f / (2.0f * M_PI))  // 57.2957795
 
 #define VEC2_SIZE 2
 #define VEC3_SIZE 3
@@ -22,17 +22,27 @@
 /*-----------------------------DEGUB MACRO------------------------------------*/
 
 struct Representation {
-  double *data;
+  float *data;
   size_t size;
 };
 
 //#define REPRESENTATION(ptr) ((struct Representation *)ptr);
 
+static void representationFree(struct Representation *re) {
+  // REQUIRE(re != NULL);
+
+  free(re->data);
+  DEFENSE_FREE(re);
+}
+
 static struct Representation *representationNew(size_t dataSize) {
   REQUIRE(dataSize > 0);
 
-  struct Representation *re = malloc(sizeof(struct Representation));
-  RETURN_NULL_ON_FAIL(re);
+  // struct Representation *re = malloc(sizeof(struct Representation));
+  struct Representation *re =
+      DEFENSE_MALLOC(sizeof(struct Representation), mallocFailAbort, NULL);
+
+  // RETURN_NULL_ON_FAIL(re);
   //  if (re == NULL) {
   //    return NULL;
   //  }
@@ -40,23 +50,22 @@ static struct Representation *representationNew(size_t dataSize) {
   ENSURE(re != NULL);
 
   re->size = dataSize;
-  re->data = malloc(dataSize * sizeof(double));
+  // re->data = malloc(dataSize * sizeof(float));
+  re->data = DEFENSE_MALLOC(dataSize * sizeof(float), mallocFailAbort, NULL);
 
-  if (re->data == NULL) {
-    free(re);
-    return NULL;
-  }
+  //  if (re->data == NULL) {
+  //    // free(re);
+  //    goto clean;
+  //    return NULL;
+  //  }
 
   ENSURE(re->data != NULL);
 
   return re;
-}
 
-static void representationFree(struct Representation *re) {
-  REQUIRE(re != NULL);
-
-  free(re->data);
-  DEFENSE_FREE(re);
+  // clean:
+  //  representationFree(re);
+  //  return NULL;
 }
 
 #ifdef DEBUG
@@ -203,7 +212,7 @@ void printVersor(versor q) {
 
 vec3 zeroVec3() {
   struct Representation *vc = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -216,7 +225,7 @@ vec3 zeroVec3() {
 
 vec4 zeroVec4() {
   struct Representation *vc = representationNew(VEC4_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -229,7 +238,7 @@ vec4 zeroVec4() {
 }
 
 void vecFree(void *v) {
-  REQUIRE(v != NULL);
+  // REQUIRE(v != NULL);
 
   struct Representation *vr = (struct Representation *)v;
   representationFree(vr);
@@ -239,7 +248,7 @@ void vecFree(void *v) {
 
 vec3 vec3New(double x, double y, double z) {
   struct Representation *v = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(v);
+  // RETURN_NULL_ON_FAIL(v);
 
   ENSURE(v != NULL);
 
@@ -248,6 +257,22 @@ vec3 vec3New(double x, double y, double z) {
   v->data[2] = z;
 
   return (vec3)v;
+}
+
+float *vec3GetData(vec3 v) {
+  REQUIRE(v != NULL);
+  REQUIRE(vec3SizeCheck(v));
+
+  struct Representation *vr = (struct Representation *)v;
+  return vr->data;
+}
+
+size_t vec3GetSize(vec3 v) {
+  REQUIRE(v != NULL);
+  REQUIRE(vec3SizeCheck(v));
+
+  struct Representation *vr = (struct Representation *)v;
+  return vr->size;
 }
 
 double vec3Length(vec3 v) {
@@ -276,17 +301,19 @@ vec3 vec3Normalize(vec3 v) {
   REQUIRE(vec3SizeCheck(v));
 
   struct Representation *rv = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(rv);
+  // RETURN_NULL_ON_FAIL(rv);
 
   double l = vec3Length(v);
 
   struct Representation *vr = (struct Representation *)v;
 
-  // if (0.0f == l) {
-  if (fabs(1.0f - l) < THRESHOLD) {
+  if (0.0f == l) {
+    // if (fabs(1.0f - l) < THRESHOLD) {
     // vr->data[0] = vr->data[1] = vr->data[2] = 0.0f;
-    rv->data[0] = rv->data[1] = rv->data[2] = 0.0f;
-    goto re;
+    rv->data[0] = 0.0f;
+    rv->data[1] = 0.0f;
+    rv->data[2] = 0.0f;
+    return (vec3)rv;
   }
 
   ENSURE(l != 0);
@@ -295,7 +322,6 @@ vec3 vec3Normalize(vec3 v) {
   rv->data[1] = vr->data[1] / l;
   rv->data[2] = vr->data[2] / l;
 
-re:
   return (vec3)rv;
 }
 
@@ -309,7 +335,7 @@ vec3 vec3Add(vec3 first, vec3 second) {
   struct Representation *secondr = (struct Representation *)second;
 
   struct Representation *vc = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -338,7 +364,7 @@ vec3 vec3Sub(vec3 first, vec3 second) {
   struct Representation *secondr = (struct Representation *)second;
 
   struct Representation *vc = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -364,7 +390,7 @@ vec3 vec3AddFloat(vec3 v, double num) {
   struct Representation *vr = (struct Representation *)v;
 
   struct Representation *vc = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -390,7 +416,7 @@ vec3 vec3SubFloat(vec3 v, double num) {
   struct Representation *vr = (struct Representation *)v;
 
   struct Representation *vc = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -416,7 +442,7 @@ vec3 vec3MultFloat(vec3 v, double num) {
   struct Representation *vr = (struct Representation *)v;
 
   struct Representation *vc = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -436,7 +462,7 @@ vec3 vec3DevFloat(vec3 v, double num) {
   struct Representation *vr = (struct Representation *)v;
 
   struct Representation *vc = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -473,7 +499,7 @@ vec3 vec3Copy(vec3 source) {
   struct Representation *sourcer = (struct Representation *)source;
 
   struct Representation *v = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(v);
+  // RETURN_NULL_ON_FAIL(v);
 
   ENSURE(v != NULL);
 
@@ -509,7 +535,7 @@ vec3 vec3Cross(vec3 a, vec3 b) {
   struct Representation *br = (struct Representation *)b;
 
   struct Representation *v = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(v);
+  // RETURN_NULL_ON_FAIL(v);
 
   ENSURE(v != NULL);
 
@@ -571,7 +597,7 @@ vec3 headingToDirection(double degrees) {
   double rad = degrees * ONE_DEG_IN_RAD;
 
   struct Representation *vc = representationNew(VEC3_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -586,7 +612,7 @@ vec3 headingToDirection(double degrees) {
 
 mat3 zeroMat3() {
   struct Representation *mat = representationNew(MAT3_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
@@ -598,21 +624,39 @@ mat3 zeroMat3() {
 }
 
 mat3 identityMat3() {
-  struct Representation *mat = representationNew(MAT3_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // struct Representation *mat = representationNew(MAT3_SIZE);
+  mat3 mat = zeroMat3();
+  struct Representation *matr = (struct Representation *)mat;
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
-  mat->data[0] = 1.0f;
-  mat->data[4] = 1.0f;
-  mat->data[8] = 1.0f;
+  matr->data[0] = 1.0f;
+  matr->data[4] = 1.0f;
+  matr->data[8] = 1.0f;
 
-  return (mat3)mat;
+  return (mat3)matr;
+}
+
+float *mat3GetData(mat3 m) {
+  REQUIRE(m != NULL);
+  REQUIRE(mat3SizeCheck(m));
+
+  struct Representation *mr = (struct Representation *)m;
+  return mr->data;
+}
+
+size_t mat3GetSize(mat3 m) {
+  REQUIRE(m != NULL);
+  REQUIRE(mat3SizeCheck(m));
+
+  struct Representation *mr = (struct Representation *)m;
+  return mr->size;
 }
 
 mat4 zeroMat4() {
   struct Representation *mat = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
@@ -624,20 +668,38 @@ mat4 zeroMat4() {
 }
 
 mat4 identityMat4() {
-  struct Representation *mat = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // struct Representation *mat = representationNew(MAT4_SIZE);
+  mat4 mat = zeroMat4();
+  struct Representation *matr = (struct Representation *)mat;
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
-  mat->data[0] = 1.0f;
-  mat->data[5] = 1.0f;
-  mat->data[10] = 1.0f;
-  mat->data[15] = 1.0f;
+  matr->data[0] = 1.0f;
+  matr->data[5] = 1.0f;
+  matr->data[10] = 1.0f;
+  matr->data[15] = 1.0f;
 
-  return (mat4)mat;
+  return (mat4)matr;
 
   // return mat4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
   // 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+float *mat4GetData(mat4 m) {
+  REQUIRE(m != NULL);
+  REQUIRE(mat4SizeCheck(m));
+
+  struct Representation *mr = (struct Representation *)m;
+  return mr->data;
+}
+
+size_t mat4GetSize(mat4 m) {
+  REQUIRE(m != NULL);
+  REQUIRE(mat4SizeCheck(m));
+
+  struct Representation *mr = (struct Representation *)m;
+  return mr->size;
 }
 
 void mat4ComponentsAssign(mat4 target, mat4 source) {
@@ -655,7 +717,7 @@ void mat4ComponentsAssign(mat4 target, mat4 source) {
 }
 
 void matFree(void *m) {
-  REQUIRE(m != NULL);
+  // REQUIRE(m != NULL);
 
   struct Representation *mr = (struct Representation *)m;
   representationFree(mr);
@@ -680,7 +742,7 @@ vec4 mat4MulVec4(mat4 m, vec4 v) {
   struct Representation *vr = (struct Representation *)v;
 
   struct Representation *vc = representationNew(VEC4_SIZE);
-  RETURN_NULL_ON_FAIL(vc);
+  // RETURN_NULL_ON_FAIL(vc);
 
   ENSURE(vc != NULL);
 
@@ -710,7 +772,7 @@ mat4 mat4MulMat4(mat4 first, mat4 second) {
   struct Representation *secondr = (struct Representation *)second;
 
   struct Representation *mat = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
@@ -748,7 +810,7 @@ mat4 mat4Copy(mat4 m) {
   struct Representation *mr = (struct Representation *)m;
 
   struct Representation *mat = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
@@ -816,7 +878,7 @@ mat4 inverse(mat4 m) {
   struct Representation *mr = (struct Representation *)m;
 
   struct Representation *mat = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
@@ -942,7 +1004,7 @@ mat4 transpose(mat4 m) {
   struct Representation *mr = (struct Representation *)m;
 
   struct Representation *mat = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
@@ -977,16 +1039,18 @@ mat4 translate(mat4 m, vec3 v) {
 
   struct Representation *vr = (struct Representation *)v;
 
-  struct Representation *mat = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mat);
+  // struct Representation *mat = representationNew(MAT4_SIZE);
+  mat4 mat = identityMat4();
+  struct Representation *matr = (struct Representation *)mat;
+  // RETURN_NULL_ON_FAIL(mat);
 
   ENSURE(mat != NULL);
 
-  mat->data[12] = vr->data[0];
-  mat->data[13] = vr->data[1];
-  mat->data[14] = vr->data[2];
+  matr->data[12] = vr->data[0];
+  matr->data[13] = vr->data[1];
+  matr->data[14] = vr->data[2];
 
-  mat4 rm = mat4MulMat4((mat4)mat, m);
+  mat4 rm = mat4MulMat4((mat4)matr, m);
   ENSURE(rm != NULL);
 
   matFree(mat);
@@ -1002,20 +1066,22 @@ mat4 rotateXdeg(mat4 m, double deg) {
   // convert to radians
   double rad = deg * ONE_DEG_IN_RAD;
 
-  struct Representation *mr = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mr);
+  // struct Representation *mr = representationNew(MAT4_SIZE);
+  mat4 mat = identityMat4();
+  struct Representation *matr = (struct Representation *)mat;
+  // RETURN_NULL_ON_FAIL(mr);
 
-  ENSURE(mr != NULL);
+  ENSURE(matr != NULL);
 
-  mr->data[5] = cos(rad);
-  mr->data[9] = -sin(rad);
-  mr->data[6] = sin(rad);
-  mr->data[10] = cos(rad);
+  matr->data[5] = cos(rad);
+  matr->data[9] = -sin(rad);
+  matr->data[6] = sin(rad);
+  matr->data[10] = cos(rad);
 
-  mat4 rm = mat4MulMat4((mat4)mr, m);
+  mat4 rm = mat4MulMat4((mat4)matr, m);
   ENSURE(rm != NULL);
 
-  matFree(mr);
+  matFree(matr);
   return rm;
 }
 
@@ -1027,20 +1093,22 @@ mat4 rotateYdeg(mat4 m, double deg) {
   // convert to radians
   double rad = deg * ONE_DEG_IN_RAD;
 
-  struct Representation *mr = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mr);
+  mat4 mat = identityMat4();
+  struct Representation *matr = (struct Representation *)mat;
+  // struct Representation *mr = representationNew(MAT4_SIZE);
+  // RETURN_NULL_ON_FAIL(mr);
 
-  ENSURE(mr != NULL);
+  ENSURE(matr != NULL);
 
-  mr->data[0] = cos(rad);
-  mr->data[8] = sin(rad);
-  mr->data[2] = -sin(rad);
-  mr->data[10] = cos(rad);
+  matr->data[0] = cos(rad);
+  matr->data[8] = sin(rad);
+  matr->data[2] = -sin(rad);
+  matr->data[10] = cos(rad);
 
-  mat4 rm = mat4MulMat4((mat4)mr, m);
+  mat4 rm = mat4MulMat4((mat4)matr, m);
   ENSURE(rm != NULL);
 
-  matFree(mr);
+  matFree(matr);
 
   return rm;
 }
@@ -1053,20 +1121,22 @@ mat4 rotateZdeg(mat4 m, double deg) {
   // convert to radians
   double rad = deg * ONE_DEG_IN_RAD;
 
-  struct Representation *mr = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mr);
+  mat4 mat = identityMat4();
+  struct Representation *matr = (struct Representation *)mat;
+  // struct Representation *mr = representationNew(MAT4_SIZE);
+  // RETURN_NULL_ON_FAIL(mr);
 
-  ENSURE(mr != NULL);
+  ENSURE(matr != NULL);
 
-  mr->data[0] = cos(rad);
-  mr->data[4] = -sin(rad);
-  mr->data[1] = sin(rad);
-  mr->data[5] = cos(rad);
+  matr->data[0] = cos(rad);
+  matr->data[4] = -sin(rad);
+  matr->data[1] = sin(rad);
+  matr->data[5] = cos(rad);
 
-  mat4 rm = mat4MulMat4((mat4)mr, m);
+  mat4 rm = mat4MulMat4((mat4)matr, m);
   ENSURE(rm != NULL);
 
-  matFree(mr);
+  matFree(matr);
 
   return rm;
 }
@@ -1080,8 +1150,10 @@ mat4 scale(mat4 m, vec3 v) {
 
   struct Representation *vr = (struct Representation *)v;
 
-  struct Representation *ar = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(ar);
+  mat4 a = identityMat4();
+  struct Representation *ar = (struct Representation *)a;
+  // struct Representation *ar = representationNew(MAT4_SIZE);
+  // RETURN_NULL_ON_FAIL(ar);
 
   ENSURE(ar != NULL);
 
@@ -1114,57 +1186,57 @@ mat4 lookAt(vec3 camPos, vec3 tarPos, vec3 up) {
 
   // inverse translation to make camera position at world origin
   mat4 p = identityMat4();
-  RETURN_NULL_ON_FAIL(p);
+  // RETURN_NULL_ON_FAIL(p);
   ENSURE(p != NULL);
 
   vec3 camDir =
       vec3New(-camPosr->data[0], -camPosr->data[1], -camPosr->data[2]);
 
-  RETURN_NULL_ON_FAIL(camDir);
+  // RETURN_NULL_ON_FAIL(camDir);
   ENSURE(camDir != NULL);
 
   mat4 q = translate(p, camDir);
 
-  RETURN_NULL_ON_FAIL(q);
+  // RETURN_NULL_ON_FAIL(q);
   ENSURE(q != NULL);
 
   // distance vector
   vec3 d = vec3Sub(tarPos, camPos);
 
-  RETURN_NULL_ON_FAIL(d);
+  // RETURN_NULL_ON_FAIL(d);
   ENSURE(d != NULL);
 
   // forward vector
   vec3 f = vec3Normalize(d);
-  RETURN_NULL_ON_FAIL(f);
+  // RETURN_NULL_ON_FAIL(f);
   ENSURE(f != NULL);
 
   struct Representation *fr = (struct Representation *)f;
 
   // right vector
   vec3 r = vec3Cross(f, up);
-  RETURN_NULL_ON_FAIL(r);
+  // RETURN_NULL_ON_FAIL(r);
   ENSURE(r != NULL);
 
   vec3 nr = vec3Normalize(r);
-  RETURN_NULL_ON_FAIL(nr);
+  // RETURN_NULL_ON_FAIL(nr);
   ENSURE(nr != NULL);
 
   struct Representation *nrr = (struct Representation *)nr;
 
   // real up vector
   vec3 u = vec3Cross(nr, f);
-  RETURN_NULL_ON_FAIL(u);
+  // RETURN_NULL_ON_FAIL(u);
   ENSURE(u != NULL);
 
   vec3 nu = vec3Normalize(u);
-  RETURN_NULL_ON_FAIL(nu);
+  // RETURN_NULL_ON_FAIL(nu);
   ENSURE(nu != NULL);
 
   struct Representation *nur = (struct Representation *)nu;
 
   struct Representation *ori = (struct Representation *)identityMat4();
-  RETURN_NULL_ON_FAIL(ori);
+  // RETURN_NULL_ON_FAIL(ori);
   ENSURE(ori != NULL);
   // note that the matrix is in cloumn major order
 
@@ -1179,7 +1251,7 @@ mat4 lookAt(vec3 camPos, vec3 tarPos, vec3 up) {
   ori->data[10] = -fr->data[2];
 
   mat4 rm = mat4MulMat4((mat4)ori, q);
-  RETURN_NULL_ON_FAIL(rm);
+  // RETURN_NULL_ON_FAIL(rm);
   ENSURE(rm != NULL);
 
   // clean up calculate resource
@@ -1209,8 +1281,10 @@ mat4 perspective(double fovy, double aspect, double near, double far) {
   double sz = -(far + near) / (far - near);
   double pz = -(2.0f * far * near) / (far - near);
 
-  struct Representation *mr = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(mr);
+  // struct Representation *mr = representationNew(MAT4_SIZE);
+  mat4 m = zeroMat4();
+  struct Representation *mr = (struct Representation *)m;
+  // RETURN_NULL_ON_FAIL(mr);
 
   ENSURE(mr != NULL);
 
@@ -1230,7 +1304,7 @@ mat4 perspective(double fovy, double aspect, double near, double far) {
 
 versor zeroVersor() {
   struct Representation *ver = representationNew(VERSOR_SIZE);
-  RETURN_NULL_ON_FAIL(ver);
+  // RETURN_NULL_ON_FAIL(ver);
 
   ENSURE(ver != NULL);
 
@@ -1242,7 +1316,7 @@ versor zeroVersor() {
 }
 
 void versorFree(void *ve) {
-  REQUIRE(ve != NULL);
+  // REQUIRE(ve != NULL);
 
   struct Representation *ver = (struct Representation *)ve;
   representationFree(ver);
@@ -1255,7 +1329,7 @@ versor versorCopy(versor source) {
   struct Representation *sourcer = (struct Representation *)source;
 
   struct Representation *v = representationNew(VERSOR_SIZE);
-  RETURN_NULL_ON_FAIL(v);
+  // RETURN_NULL_ON_FAIL(v);
   ENSURE(v != NULL);
 
   memcpy(v->data, sourcer->data, VERSOR_SIZE * sizeof(double));
@@ -1267,6 +1341,22 @@ versor versorCopy(versor source) {
   return (versor)v;
 }
 
+float *versorGetData(versor vr) {
+  REQUIRE(vr != NULL);
+  REQUIRE(versorSizeCheck(vr));
+
+  struct Representation *vrr = (struct Representation *)vr;
+  return vrr->data;
+}
+
+size_t versorGetSize(versor vr) {
+  REQUIRE(vr != NULL);
+  REQUIRE(versorSizeCheck(vr));
+
+  struct Representation *vrr = (struct Representation *)vr;
+  return vrr->size;
+}
+
 versor versorDevFloat(versor ve, double num) {
   REQUIRE(versorSizeCheck(ve));
   REQUIRE(num != 0.0f);
@@ -1274,7 +1364,7 @@ versor versorDevFloat(versor ve, double num) {
   struct Representation *ver = (struct Representation *)ve;
 
   struct Representation *re = representationNew(VERSOR_SIZE);
-  RETURN_NULL_ON_FAIL(re);
+  // RETURN_NULL_ON_FAIL(re);
   ENSURE(re != NULL);
 
   re->data[0] = ver->data[0] / num;
@@ -1291,7 +1381,7 @@ versor versorMulFloat(versor ve, double num) {
   struct Representation *ver = (struct Representation *)ve;
 
   struct Representation *re = representationNew(VERSOR_SIZE);
-  RETURN_NULL_ON_FAIL(re);
+  // RETURN_NULL_ON_FAIL(re);
   ENSURE(re != NULL);
 
   re->data[0] = ver->data[0] * num;
@@ -1340,7 +1430,7 @@ versor versorMulVersor(versor first, versor second) {
   struct Representation *secondr = (struct Representation *)second;
 
   struct Representation *re = representationNew(VERSOR_SIZE);
-  RETURN_NULL_ON_FAIL(re);
+  // RETURN_NULL_ON_FAIL(re);
   ENSURE(re != NULL);
 
   re->data[0] =
@@ -1376,7 +1466,7 @@ versor versorAdd(versor first, versor second) {
   struct Representation *secondr = (struct Representation *)second;
 
   struct Representation *re = representationNew(VERSOR_SIZE);
-  RETURN_NULL_ON_FAIL(re);
+  // RETURN_NULL_ON_FAIL(re);
   ENSURE(re != NULL);
 
   re->data[0] = firstr->data[0] + secondr->data[0];
@@ -1395,7 +1485,7 @@ versor versorAdd(versor first, versor second) {
 
 versor quatFromAxisRad(double radians, double x, double y, double z) {
   struct Representation *re = representationNew(VERSOR_SIZE);
-  RETURN_NULL_ON_FAIL(re);
+  // RETURN_NULL_ON_FAIL(re);
   ENSURE(re != NULL);
 
   re->data[0] = cos(radians / 2.0f);
@@ -1422,7 +1512,7 @@ mat4 quatToMat4(versor q) {
   double z = qr->data[3];
 
   struct Representation *m = representationNew(MAT4_SIZE);
-  RETURN_NULL_ON_FAIL(m);
+  // RETURN_NULL_ON_FAIL(m);
   ENSURE(m != NULL);
 
   m->data[0] = 1.0f - 2.0f * y * y - 2.0f * z * z;
@@ -1489,7 +1579,7 @@ versor versorSlerp(versor q, versor r, double t) {
   }
 
   struct Representation *re = representationNew(VERSOR_SIZE);
-  RETURN_NULL_ON_FAIL(re);
+  // RETURN_NULL_ON_FAIL(re);
   ENSURE(re != NULL);
 
   double sinHalfTheta = sqrt(1.0f - cosHalfTheta * cosHalfTheta);

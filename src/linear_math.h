@@ -1,11 +1,11 @@
 #ifndef LINEAR_MATH_H
 #define LINEAR_MATH_H
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 //#include <stdbool.h>
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
 
 //#include "debug.h"
 
@@ -17,6 +17,10 @@ typedef void *vec4;
 typedef void *mat3;
 typedef void *mat4;
 typedef void *versor;
+
+#define TAU 2.0f * M_PI
+#define ONE_DEG_IN_RAD ((2.0f * M_PI) / 360.0f)  // 0.017444444
+#define ONE_RAD_IN_DEG (360.0f / (2.0f * M_PI))  // 57.2957795
 
 /*---------------------------PRINT FUNCTIONS------------------------------*/
 
@@ -36,6 +40,10 @@ vec4 zeroVec4();
 void vecFree(void *v);
 
 vec3 vec3New(double x, double y, double z);
+
+float *vec3GetData(vec3 v);
+
+size_t vec3GetSize(vec3 v);
 
 double vec3Length(vec3 v);
 
@@ -86,9 +94,17 @@ mat3 zeroMat3();
 
 mat3 identityMat3();
 
+float *mat3GetData(mat3 m);
+
+size_t mat3GetSize(mat3 m);
+
 mat4 zeroMat4();
 
 mat4 identityMat4();
+
+float *mat4GetData(mat4 m);
+
+size_t mat4GetSize(mat4 m);
 
 void mat4ComponentsAssign(mat4 target, mat4 source);
 
@@ -129,6 +145,10 @@ mat4 perspective(double fovy, double aspect, double near, double far);
 versor zeroVersor();
 
 void versorFree(void *ve);
+
+float *versorGetData(versor vr);
+
+size_t versorGetSize(versor vr);
 
 versor versorDevFloat(versor ve, double num);
 
