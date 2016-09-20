@@ -3,7 +3,8 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "../../third_party/stb/stb_image.h"
 
-#include <cmockery/pbc.h>
+//#include <cmockery/pbc.h>
+#include "debug_macro.h"
 
 #ifdef DEBUG
 static void printProgramInfo(GLuint program) {

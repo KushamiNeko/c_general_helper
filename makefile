@@ -10,7 +10,7 @@ GENERAL_HELPER = ~/programming_projects/c/general/bin
 #	gcc $(FLAGS) `pkg-config --cflags cmockery2` src/general_helper_test.c \
 #	 	-o bin/general_helper_test `pkg-config --libs cmockery2`
 
-bin/general_helper_test: bin/general_helper bin/linear_math bin/gl_helper
+bin/general_helper_test: bin/general_helper bin/linear_math #bin/gl_helper
 	gcc $(FLAGS) `pkg-config --cflags cmockery2` src/general_helper_test.c \
 	 	-o bin/general_helper_test `pkg-config --libs cmockery2`
 
