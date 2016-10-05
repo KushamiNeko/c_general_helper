@@ -5,11 +5,14 @@
 #include <stdio.h>
 
 #ifdef DEBUG
+
 #define REQUIRE(expr) assert(expr)
 #define ENSURE(expr) assert(expr)
 
-#define DEBUG_MESSAGE(m) printf(m)
+#define DEBUG_MESSAGE(m, ...) printf(m, ##__VA_ARGS__)
+
 #else
+
 #define REQUIRE(expr) \
   do {                \
   } while (0)
@@ -18,9 +21,10 @@
   do {               \
   } while (0)
 
-#define DEBUG_MESSAGE(m) \
-  do {                   \
+#define DEBUG_MESSAGE(m, ...) \
+  do {                        \
   } while (0)
 
 #endif
+
 #endif

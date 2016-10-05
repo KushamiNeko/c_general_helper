@@ -3,7 +3,7 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "../../third_party/stb/stb_image.h"
 
-//#include <cmockery/pbc.h>
+// #include <cmockery/pbc.h>
 #include "debug_macro.h"
 
 #ifdef DEBUG
@@ -63,10 +63,7 @@ GLuint generateVBO(const GLuint *vao, const int pointCounts,
                    const int vectorSize, const GLfloat *dataArray,
                    const int loc) {
   REQUIRE(vao != NULL);
-  // REQUIRE(loc != 0);
   REQUIRE(dataArray != NULL);
-
-  // REQUIRE(sizeof(dataArray) == sizeof(GLfloat) * pointCounts * vectorSize);
 
   // generate vbo
   GLuint vbo = 0;
@@ -112,22 +109,20 @@ void generateShader(const GLuint *shaderProgram, const char *shaderFile,
   REQUIRE(shaderProgram != NULL);
   REQUIRE(shaderType == GL_VERTEX_SHADER || shaderType == GL_FRAGMENT_SHADER);
 
-  // REQUIRE(g_file_test(shaderFile, G_FILE_TEST_EXISTS));
-
   GLuint shader;
   switch (shaderType) {
-  case GL_VERTEX_SHADER: {
-    shader = glCreateShader(GL_VERTEX_SHADER);
-    break;
-  }
-  case GL_FRAGMENT_SHADER: {
-    shader = glCreateShader(GL_FRAGMENT_SHADER);
-    break;
-  }
-  default:
-    printf("Unexpected shader type!\n");
-    exit(EXIT_FAILURE);
-    break;
+    case GL_VERTEX_SHADER: {
+      shader = glCreateShader(GL_VERTEX_SHADER);
+      break;
+    }
+    case GL_FRAGMENT_SHADER: {
+      shader = glCreateShader(GL_FRAGMENT_SHADER);
+      break;
+    }
+    default:
+      printf("Unexpected shader type!\n");
+      exit(EXIT_FAILURE);
+      break;
   }
 
   glShaderSource(shader, 1, &shaderFile, NULL);
@@ -143,108 +138,106 @@ void generateShader(const GLuint *shaderProgram, const char *shaderFile,
 
 static int getTextureSlotInt(const GLenum textureSlot) {
   switch (textureSlot) {
-  case GL_TEXTURE0: {
-    return 0;
-    break;
-  }
-  case GL_TEXTURE1: {
-    return 1;
-    break;
-  }
-  case GL_TEXTURE2: {
-    return 2;
-    break;
-  }
-  case GL_TEXTURE3: {
-    return 3;
-    break;
-  }
-  case GL_TEXTURE4: {
-    return 4;
-    break;
-  }
-  case GL_TEXTURE5: {
-    return 5;
-    break;
-  }
-  case GL_TEXTURE6: {
-    return 6;
-    break;
-  }
-  case GL_TEXTURE7: {
-    return 7;
-    break;
-  }
-  case GL_TEXTURE8: {
-    return 8;
-    break;
-  }
-  case GL_TEXTURE9: {
-    return 9;
-    break;
-  }
-  case GL_TEXTURE10: {
-    return 10;
-    break;
-  }
-  case GL_TEXTURE11: {
-    return 11;
-    break;
-  }
-  case GL_TEXTURE12: {
-    return 12;
-    break;
-  }
-  case GL_TEXTURE13: {
-    return 13;
-    break;
-  }
-  case GL_TEXTURE14: {
-    return 14;
-    break;
-  }
-  case GL_TEXTURE15: {
-    return 15;
-    break;
-  }
-  case GL_TEXTURE16: {
-    return 16;
-    break;
-  }
-  case GL_TEXTURE17: {
-    return 17;
-    break;
-  }
-  case GL_TEXTURE18: {
-    return 18;
-    break;
-  }
-  case GL_TEXTURE19: {
-    return 19;
-    break;
-  }
-  case GL_TEXTURE20: {
-    return 20;
-    break;
-  }
+    case GL_TEXTURE0: {
+      return 0;
+      break;
+    }
+    case GL_TEXTURE1: {
+      return 1;
+      break;
+    }
+    case GL_TEXTURE2: {
+      return 2;
+      break;
+    }
+    case GL_TEXTURE3: {
+      return 3;
+      break;
+    }
+    case GL_TEXTURE4: {
+      return 4;
+      break;
+    }
+    case GL_TEXTURE5: {
+      return 5;
+      break;
+    }
+    case GL_TEXTURE6: {
+      return 6;
+      break;
+    }
+    case GL_TEXTURE7: {
+      return 7;
+      break;
+    }
+    case GL_TEXTURE8: {
+      return 8;
+      break;
+    }
+    case GL_TEXTURE9: {
+      return 9;
+      break;
+    }
+    case GL_TEXTURE10: {
+      return 10;
+      break;
+    }
+    case GL_TEXTURE11: {
+      return 11;
+      break;
+    }
+    case GL_TEXTURE12: {
+      return 12;
+      break;
+    }
+    case GL_TEXTURE13: {
+      return 13;
+      break;
+    }
+    case GL_TEXTURE14: {
+      return 14;
+      break;
+    }
+    case GL_TEXTURE15: {
+      return 15;
+      break;
+    }
+    case GL_TEXTURE16: {
+      return 16;
+      break;
+    }
+    case GL_TEXTURE17: {
+      return 17;
+      break;
+    }
+    case GL_TEXTURE18: {
+      return 18;
+      break;
+    }
+    case GL_TEXTURE19: {
+      return 19;
+      break;
+    }
+    case GL_TEXTURE20: {
+      return 20;
+      break;
+    }
 
-  default: {
-    return -1;
-    break;
-  }
+    default: {
+      return -1;
+      break;
+    }
   }
 }
 
-int loadTexture(const char *textureFile, GLuint *shaderProgram,
-                GLenum textureSlot, GLuint *tex, GLint *texLoc) {
-  REQUIRE(g_file_test(textureFile, G_FILE_TEST_EXISTS));
+bool loadTexture(const char *textureFile, GLuint *shaderProgram,
+                 GLenum textureSlot, GLuint *tex, GLint *texLoc) {
+  // REQUIRE(g_file_test(textureFile, G_FILE_TEST_EXISTS));
+  REQUIRE(fileExist(textureFile));
+
   REQUIRE(shaderProgram != NULL);
-  // REQUIRE(*shaderProgram != 0);
   REQUIRE(tex != NULL);
-  // REQUIRE(*tex != 0);
   REQUIRE(texLoc != NULL);
-  // REQUIRE(*texLoc != 0);
-  // REQUIRE(textureSlot != 0);
 
   int x, y, n;
   int forceChannels = 4;
@@ -252,7 +245,8 @@ int loadTexture(const char *textureFile, GLuint *shaderProgram,
 
   if (!imageData) {
     // printf("ERROR: counld not load %s\n", textureFile);
-    return 0;
+    DEBUG_MESSAGE("ERROR: counld not load %s\n", textureFile);
+    return false;
   }
 
   ENSURE(imageData);
@@ -300,7 +294,85 @@ int loadTexture(const char *textureFile, GLuint *shaderProgram,
   glUseProgram(*shaderProgram);
   glUniform1i(*texLoc, slotIndex);
 
-  return 1;
+  free(imageData);
+
+  return true;
+}
+
+static bool loadCubeMapSide(GLuint *tex, GLenum sideTarget,
+                            const char *textureFile) {
+  glBindTexture(GL_TEXTURE_CUBE_MAP, *tex);
+
+  int x, y, n;
+  int forceChannels = 4;
+  unsigned char *imageData = stbi_load(textureFile, &x, &y, &n, forceChannels);
+
+  if (!imageData) {
+    DEBUG_MESSAGE("ERROR: counld not load %s\n", textureFile);
+    // printf("ERROR: counld not load %s\n", textureFile);
+    return false;
+  }
+
+  glTexImage2D(sideTarget, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+               imageData);
+
+  free(imageData);
+
+  return true;
+}
+
+bool createCubeMap(const char *front, const char *back, const char *top,
+                   const char *bottom, const char *right, const char *left,
+                   GLuint *shaderProgram, GLenum textureSlot, GLuint *cubeTex,
+                   GLint *cubeTexLoc) {
+  REQUIRE(fileExist(front));
+  REQUIRE(fileExist(back));
+  REQUIRE(fileExist(top));
+  REQUIRE(fileExist(bottom));
+  REQUIRE(fileExist(left));
+  REQUIRE(fileExist(right));
+  // REQUIRE(g_file_test(front, G_FILE_TEST_EXISTS));
+  // REQUIRE(g_file_test(back, G_FILE_TEST_EXISTS));
+  // REQUIRE(g_file_test(top, G_FILE_TEST_EXISTS));
+  // REQUIRE(g_file_test(bottom, G_FILE_TEST_EXISTS));
+  // REQUIRE(g_file_test(left, G_FILE_TEST_EXISTS));
+  // REQUIRE(g_file_test(right, G_FILE_TEST_EXISTS));
+
+  REQUIRE(shaderProgram != NULL);
+  REQUIRE(cubeTex != NULL);
+
+  glActiveTexture(textureSlot);
+
+  loadCubeMapSide(cubeTex, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, front);
+
+  loadCubeMapSide(cubeTex, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, back);
+
+  loadCubeMapSide(cubeTex, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, bottom);
+
+  loadCubeMapSide(cubeTex, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, top);
+
+  loadCubeMapSide(cubeTex, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, left);
+
+  loadCubeMapSide(cubeTex, GL_TEXTURE_CUBE_MAP_POSITIVE_X, right);
+
+  int slotIndex = getTextureSlotInt(textureSlot);
+  ENSURE(slotIndex != -1);
+
+  glBindTexture(GL_TEXTURE_2D, *cubeTex);
+
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glActiveTexture(textureSlot);
+  glUseProgram(*shaderProgram);
+  glUniform1i(*cubeTexLoc, slotIndex);
+
+  return true;
 }
 
 GLuint generateGLTexture() {

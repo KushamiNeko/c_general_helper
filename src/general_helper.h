@@ -1,6 +1,7 @@
 #ifndef GENERAL_HELPER_H
 #define GENERAL_HELPER_H
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,10 +61,18 @@ char *pathGetBase(const char *path);
 
 char *pathRemoveExt(const char *path);
 
-int fileExist(const char *fileName);
+bool fileExist(const char *fileName);
 
-char *readFile(const char *file);
+bool fileIsRegularFile(const char *fileName);
 
-int copy_file(const char *src, const char *tar);
+bool fileIsDirectory(const char *fileName);
+
+char *fileReadContents(const char *fileName);
+
+bool fileCopy(const char *src, const char *tar);
+
+// char *readFileContent(const char *file);
+
+// int copyFile(const char *src, const char *tar);
 
 #endif

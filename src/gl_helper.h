@@ -3,14 +3,17 @@
 
 #define GL_VIEWPORT_SIZE 2
 
-#include <glib-2.0/glib.h>
+// #include <glib-2.0/glib.h>
 
 #include <GL/glew.h>
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <stb_image.h>
+
+#include "general_helper.h"
 
 #ifdef DEBUG
 
@@ -39,10 +42,14 @@ void setVBOData(const GLuint *vbo, const int point_count, const int vector_size,
 void generateShader(const GLuint *shader_program, const char *shader_file,
                     const GLenum shader_type);
 
-int loadTexture(const char *textureFile, GLuint *shaderProgram,
-                GLenum textureSlot, GLuint *tex, GLint *texLoc);
+bool loadTexture(const char *textureFile, GLuint *shaderProgram,
+                 GLenum textureSlot, GLuint *tex, GLint *texLoc);
+
+bool createCubeMap(const char *front, const char *back, const char *top,
+                   const char *bottom, const char *right, const char *left,
+                   GLuint *shaderProgram, GLenum textureSlot, GLuint *cubeTex,
+                   GLint *cubeTexLoc);
 
 GLuint generateGLTexture();
 
 GLint generateTexLoc(GLuint *shaderProgram, const char *textureName);
-

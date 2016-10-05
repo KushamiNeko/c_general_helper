@@ -194,7 +194,7 @@ char *pathRemoveExt(const char *path) {
   return r;
 }
 
-int fileExist(const char *fileName) {
+bool fileExist(const char *fileName) {
   REQUIRE(fileName != NULL);
   REQUIRE(strlen(fileName) != 0);
 
@@ -203,14 +203,36 @@ int fileExist(const char *fileName) {
   return result == 0;
 }
 
-char *readFile(const char *file) {
-  REQUIRE(file != NULL);
-  REQUIRE(strlen(file) != 0);
-  REQUIRE(fileExist(file) == 1);
+bool fileIsRegularFile(const char *fileName) {
+  REQUIRE(fileName != NULL);
+  REQUIRE(strlen(fileName) != 0);
+
+  REQUIRE(fileExist(fileName));
+
+  struct stat st;
+  stat(fileName, &st);
+  return S_ISREG(st.st_mode);
+}
+
+bool fileIsDirectory(const char *fileName) {
+  REQUIRE(fileName != NULL);
+  REQUIRE(strlen(fileName) != 0);
+
+  REQUIRE(fileExist(fileName));
+
+  struct stat st;
+  stat(fileName, &st);
+  return S_ISDIR(st.st_mode);
+}
+
+char *fileReadContents(const char *fileName) {
+  REQUIRE(fileName != NULL);
+  REQUIRE(strlen(fileName) != 0);
+  REQUIRE(fileExist(fileName) == 1);
 
   char *content = NULL;
   long length;
-  FILE *f = fopen(file, "rb");
+  FILE *f = fopen(fileName, "rb");
 
   if (f) {
     ENSURE(f);
@@ -245,7 +267,7 @@ char *readFile(const char *file) {
   return content;
 }
 
-int copy_file(const char *src, const char *tar) {
+bool fileCopy(const char *src, const char *tar) {
   REQUIRE(src != NULL);
   REQUIRE(strlen(src) != 0);
   REQUIRE(fileExist(src) == 1);
@@ -257,7 +279,7 @@ int copy_file(const char *src, const char *tar) {
 
   source = fopen(src, "rb");
   if (source == NULL) {
-    return 0;
+    return false;
   }
 
   ENSURE(source != NULL);
@@ -269,7 +291,7 @@ int copy_file(const char *src, const char *tar) {
   target = fopen(tar, "wb");
   if (target == NULL) {
     fclose(source);
-    return 0;
+    return false;
   }
 
   ENSURE(target != NULL);
@@ -283,5 +305,5 @@ int copy_file(const char *src, const char *tar) {
   fclose(source);
   fclose(target);
 
-  return 1;
+  return true;
 }

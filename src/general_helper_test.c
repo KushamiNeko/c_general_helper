@@ -1,4 +1,5 @@
 #include "general_helper.c"
+
 #include <assert.h>
 
 #include <setjmp.h>
@@ -58,11 +59,17 @@ static void pathRemoveExtTest(void **state) {
   }
 }
 
-static void checkFileExistTest(void **state) {
+static void fileFuncTest(void **state) {
   int exists = fileExist("makefile");
   int nonexists = fileExist("hello");
   assert(exists == 1);
   assert(nonexists == 0);
+
+  assert(fileIsRegularFile("makefile"));
+  assert(fileIsDirectory("bin"));
+
+  assert(!fileIsRegularFile("bin"));
+  assert(!fileIsDirectory("makefile"));
 }
 
 static void memoryLeakTest(void **state) {
@@ -147,15 +154,15 @@ static void nullReturnTest(void **state) {
   assert(t != NULL);
   DEFENSE_FREE(t);
   assert(t == NULL);
-
 }
 
 int main(int argc, char **argv) {
   const UnitTest tests[] = {
       unit_test(pathJoinTest),      unit_test(pathGetBaseTest),
-      unit_test(pathRemoveExtTest), unit_test(checkFileExistTest),
+      unit_test(pathRemoveExtTest), unit_test(fileFuncTest),
       unit_test(memoryLeakTest),    unit_test(charJoinTest),
-      unit_test(nullReturnTest),
+      unit_test(nullReturnTest),    unit_test(nullReturnTest),
+      unit_test(nullReturnTest),    unit_test(nullReturnTest),
   };
 
   return run_tests(tests, "general_helper");
