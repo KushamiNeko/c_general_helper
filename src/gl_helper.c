@@ -96,7 +96,7 @@ void setVBOData(const GLuint *vbo, const int pointCounts, const int vectorSize,
   REQUIRE(*vbo != 0);
   REQUIRE(dataArray != NULL);
 
-  REQUIRE(sizeof(dataArray) == sizeof(GLfloat) * pointCounts * vectorSize);
+  // REQUIRE(sizeof(dataArray) == sizeof(GLfloat) * pointCounts * vectorSize);
 
   glBindBuffer(GL_ARRAY_BUFFER, *vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * pointCounts * vectorSize,
@@ -358,7 +358,8 @@ bool createCubeMap(const char *front, const char *back, const char *top,
   int slotIndex = getTextureSlotInt(textureSlot);
   ENSURE(slotIndex != -1);
 
-  glBindTexture(GL_TEXTURE_2D, *cubeTex);
+  // glBindTexture(GL_TEXTURE_2D, *cubeTex);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, *cubeTex);
 
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -367,6 +368,12 @@ bool createCubeMap(const char *front, const char *back, const char *top,
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BASE_LEVEL, 0);
+  // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, 100);
+  //
+  // // glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+  // glGenerateTextureMipmap(*cubeTex);
 
   glActiveTexture(textureSlot);
   glUseProgram(*shaderProgram);

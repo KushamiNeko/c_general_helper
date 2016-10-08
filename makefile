@@ -6,13 +6,17 @@ endif
 
 GENERAL_HELPER = ~/programming_projects/c/general/bin
 
+TEST_PKG_CONFIG_LIBS = cmockery2
+
 #bin/linear_math_test: bin/linear_math
 #	gcc $(FLAGS) `pkg-config --cflags cmockery2` src/general_helper_test.c \
 #	 	-o bin/general_helper_test `pkg-config --libs cmockery2`
 
-bin/general_helper_test: bin/general_helper bin/linear_math bin/gl_helper bin/obj_parser
-	gcc $(FLAGS) `pkg-config --cflags cmockery2` src/general_helper_test.c \
-	 	-o bin/general_helper_test `pkg-config --libs cmockery2`
+all: bin/general_helper bin/general_helper_test bin/linear_math bin/gl_helper bin/obj_parser
+
+bin/general_helper_test: bin/general_helper
+	gcc $(FLAGS) `pkg-config --cflags $(TEST_PKG_CONFIG_LIBS)` src/general_helper_test.c \
+	 	-o bin/general_helper_test `pkg-config --libs $(TEST_PKG_CONFIG_LIBS)`
 
 bin/linear_math:
 	gcc $(FLAGS) -c src/linear_math.c -o bin/linear_math
@@ -27,16 +31,11 @@ bin/general_helper:
 	gcc $(FLAGS) -c src/general_helper.c -o bin/general_helper
 
 clean:
-	@if [ $(shell find 'bin' -type d -empty)  ]; then\
-		echo 'bin is already clean';\
-	else\
-		echo 'cleaning bin...';\
-		rm -r bin/*;\
-	fi
+	rm -f bin/*
 
 release:
 	make clean
-	make
+	make 
 
 debug:
 	make clean

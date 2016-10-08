@@ -1,7 +1,7 @@
 #ifndef GL_HELPER_H
 #define GL_HELPER_H
 
-#define GL_VIEWPORT_SIZE 2
+#define GL_HELPER_VIEWPORT_SIZE 2
 
 // #include <glib-2.0/glib.h>
 
