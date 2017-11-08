@@ -14,37 +14,37 @@
 #define SYSTEM_PATH_SEPARATOR "/"
 #endif
 
-#define DEFENSE_CALLOC(num, size, cbFail, cbData) \
-  ({                                              \
-    void *ptr;                                    \
-    ptr = calloc(num, size);                      \
-    if (ptr == NULL) {                            \
-      cbFail(cbData);                             \
-    }                                             \
-    ptr;                                          \
+#define DEFENSE_CALLOC(num, size, cbFail, cbData)                              \
+  ({                                                                           \
+    void *ptr;                                                                 \
+    ptr = calloc(num, size);                                                   \
+    if (ptr == NULL) {                                                         \
+      cbFail(cbData);                                                          \
+    }                                                                          \
+    ptr;                                                                       \
   })
 
-#define DEFENSE_MALLOC(size, cbFail, cbData) \
-  ({                                         \
-    void *ptr;                               \
-    ptr = malloc(size);                      \
-    if (ptr == NULL) {                       \
-      cbFail(cbData);                        \
-    }                                        \
-    ptr;                                     \
+#define DEFENSE_MALLOC(size, cbFail, cbData)                                   \
+  ({                                                                           \
+    void *ptr;                                                                 \
+    ptr = malloc(size);                                                        \
+    if (ptr == NULL) {                                                         \
+      cbFail(cbData);                                                          \
+    }                                                                          \
+    ptr;                                                                       \
   })
 
-#define DEFENSE_FREE(ptr) \
-  ({                      \
-    free(ptr);            \
-    ptr = NULL;           \
+#define DEFENSE_FREE(ptr)                                                      \
+  ({                                                                           \
+    free(ptr);                                                                 \
+    ptr = NULL;                                                                \
   })
 
-#define RETURN_NULL_ON_FAIL(ptr) \
-  ({                             \
-    if (ptr == NULL) {           \
-      return NULL;               \
-    }                            \
+#define RETURN_NULL_ON_FAIL(ptr)                                               \
+  ({                                                                           \
+    if (ptr == NULL) {                                                         \
+      return NULL;                                                             \
+    }                                                                          \
   })
 
 void mallocFailAbort(void *data);

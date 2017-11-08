@@ -19,8 +19,8 @@ typedef void *mat4;
 typedef void *versor;
 
 #define TAU 2.0f * M_PI
-#define ONE_DEG_IN_RAD ((2.0f * M_PI) / 360.0f)  // 0.017444444
-#define ONE_RAD_IN_DEG (360.0f / (2.0f * M_PI))  // 57.2957795
+#define ONE_DEG_IN_RAD ((2.0f * M_PI) / 360.0f) // 0.017444444
+#define ONE_RAD_IN_DEG (360.0f / (2.0f * M_PI)) // 57.2957795
 
 /*---------------------------PRINT FUNCTIONS------------------------------*/
 
